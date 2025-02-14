@@ -1,0 +1,16 @@
+header {
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 10rem;
+    width: 100%;
+    background-image: url("../images/banner.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+body, header, footer {
+    margin: 0;
+}

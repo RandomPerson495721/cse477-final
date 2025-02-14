@@ -1,0 +1,124 @@
+nav {
+    background-color: #777F8B;
+    overflow: hidden;
+    align-content: flex-start;
+    padding-left: 2vw;
+    display: flex;
+    width: 100vw;
+    font-family: 'Roboto', sans-serif;
+}
+
+nav h1 {
+    align-content: center;
+    margin-right: 1rem;
+}
+
+.banner-buttons {
+    display: flex;
+    /*justify-content: space-between;*/
+    align-items: center;
+    padding: 1rem 0;
+}
+
+.button {
+    background-color: #051822;
+    opacity: 0.7;
+    border: none;
+    color: #43aee4;
+    text-align: center;
+    text-decoration: none;
+    /*padding: 1rem 2rem;*/
+    cursor: pointer;
+    /* make the button rounded */
+    border-radius: 6px;
+    /* Make the button have a shadow on hover */
+    transition: 0.2s;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    box-sizing: border-box;
+    align-content: center;
+    width: 6rem;
+    height: 3rem;
+}
+
+.button:hover {
+    background-color: #43aee4;
+    color: #051822;
+    opacity: 1;
+    border: 3px solid #051822;
+    font-size: 0.9rem;
+}
+
+#menu-bar {
+    display: none;
+}
+
+#social-linkedin {
+    background-image: url("../images/social-linkedin.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 3.2rem;
+    width: 3.2rem;
+    padding: 0;
+}
+
+.hidden-text {
+    display: none;
+}
+
+@media screen and (max-width: 650px) {
+
+    #menu-bar {
+        display: flex;
+        top: 0;
+        right: 0;
+        padding: 1rem;
+        aspect-ratio: 1;
+        width: 2rem;
+        cursor: pointer;
+        align-self: center;
+        background-image: url("../images/menu-bar.png");
+        background-size: cover;
+        background-position: center;
+        border: none;
+    }
+
+    .banner-buttons {
+        display: none;
+    }
+
+    .banner-buttons.expanded {
+        flex-direction: column;
+        align-items: center;
+        padding-bottom: 0;
+    }
+
+    nav {
+        flex-direction: column;
+        text-align: center;
+        padding: 0;
+    }
+
+    .button {
+        opacity: 0.5;
+        width: 100% !important;
+        font-size: 1rem;
+        border-radius: 0;
+        transition: none;
+    }
+
+    .button:hover {
+        opacity: 1;
+        border: none;
+    }
+
+    #social-linkedin {
+        background-image: none;
+        width: inherit;
+    }
+
+    .hidden-text {
+        display: block;
+    }
+}
