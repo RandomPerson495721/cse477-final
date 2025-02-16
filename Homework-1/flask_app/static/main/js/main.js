@@ -17,4 +17,3 @@ window.addEventListener('resize', function () {
         navMenu.classList.replace('banner-buttons-expanded', 'banner-buttons');
     }
 });
-
