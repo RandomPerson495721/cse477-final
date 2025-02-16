@@ -1,0 +1,72 @@
+.about-card {
+    display: flex;
+    flex-direction: row;
+    max-width: 80vw;
+    max-height: 50vh;
+    contain: content;
+}
+
+.about-card img {
+    max-width: inherit;
+}
+
+.description-text {
+    min-width: 10vw;
+    margin: 2vh 1rem;
+    padding-bottom: 2vh;
+    text-align: justify;
+    overflow: scroll;
+}
+
+
+body {
+    display: flex;
+    flex-direction: column;
+    font-family: 'Roboto', sans-serif;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+    /*height: 100%;*/
+}
+
+
+
+.column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 40vw;
+}
+
+@media screen and (max-width: 650px) {
+
+    .about-card {
+        flex-direction: column;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        max-height: none;
+        width: 80vw;
+    }
+
+    .column {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    .description-text {
+        overflow: visible;
+    }
+
+    /*.about-card img {*/
+    /*    width: 100%;*/
+    /*    height: auto;*/
+    /*    object-fit: cover;*/
+    /*}*/
+    html, body {
+
+    }
+}

@@ -3,7 +3,7 @@ header {
     top: 0;
     left: 0;
     right: 0;
-    height: 10rem;
+    height: 20vh;
     width: 100%;
     background-image: url("../images/banner.jpg");
     background-size: cover;
