@@ -1,6 +1,6 @@
 
 // Function to toggle the visibility of the navigation menu based on the 'menu-bar' button
-document.getElementById('menu-bar').addEventListener('click', function () {
+document.getElementById('menu__bar').addEventListener('click', function () {
     var navMenu = document.getElementById('navMenu');
 
     if (navMenu.classList.contains('banner-buttons')) {

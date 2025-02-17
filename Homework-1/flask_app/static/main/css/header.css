@@ -1,9 +1,10 @@
+/* Header Styling */
 header {
     position: relative;
     top: 0;
     left: 0;
     right: 0;
-    height: 20vh;
+    height: 10vh;
     width: 100%;
     background-image: url("../images/banner.jpg");
     background-size: cover;
@@ -11,6 +12,7 @@ header {
     background-repeat: no-repeat;
 }
 
+/* No margin for the body, header, and footer */
 body, header, footer {
     margin: 0;
 }
