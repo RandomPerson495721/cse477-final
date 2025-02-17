@@ -23,6 +23,7 @@ const sound = {
 const history = [];
 let awoken = false;
 
+// Key elements
 const whiteKeys = document.getElementsByClassName('white-key');
 const blackKeys = document.getElementsByClassName('black-key');
 
