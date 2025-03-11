@@ -3,10 +3,10 @@
 document.getElementById('menu__bar').addEventListener('click', function () {
     var navMenu = document.getElementById('navMenu');
 
-    if (navMenu.classList.contains('banner-buttons')) {
-        navMenu.classList.replace('banner-buttons', 'banner-buttons-expanded');
+    if (navMenu.classList.contains('banner__buttons')) {
+        navMenu.classList.replace('banner__buttons', 'banner__buttons--expanded');
     } else {
-        navMenu.classList.replace('banner-buttons-expanded', 'banner-buttons');
+        navMenu.classList.replace('banner__buttons--expanded', 'banner__buttons');
     }
 });
 
