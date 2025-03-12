@@ -83,6 +83,7 @@ class database:
         print('I create and populate database tables.')
 
 
+
     def insertRows(self, table='table', columns=['x','y'], parameters=[['v11','v12'],['v21','v22']]):
         print('I insert things into the database.')
 
