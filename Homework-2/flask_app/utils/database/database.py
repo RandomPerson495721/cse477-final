@@ -5,27 +5,28 @@ import csv
 from io import StringIO
 import itertools
 import datetime
+
+
 class database:
 
-    def __init__(self, purge = False):
+    def __init__(self, purge=False):
 
         # Grab information from the configuration file
-        self.database       = 'db'
-        self.host           = '127.0.0.1'
-        self.user           = 'master'
-        self.port           = 3306
-        self.password       = 'master'
+        self.database = 'db'
+        self.host = '127.0.0.1'
+        self.user = 'master'
+        self.port = 3306
+        self.password = 'master'
 
-    def query(self, query = "SELECT CURDATE()", parameters = None):
+    def query(self, query="SELECT CURDATE()", parameters=None):
 
-        cnx = mysql.connector.connect(host     = self.host,
-                                      user     = self.user,
-                                      password = self.password,
-                                      port     = self.port,
-                                      database = self.database,
-                                      charset  = 'latin1'
-                                     )
-
+        cnx = mysql.connector.connect(host=self.host,
+                                      user=self.user,
+                                      password=self.password,
+                                      port=self.port,
+                                      database=self.database,
+                                      charset='latin1'
+                                      )
 
         if parameters is not None:
             cur = cnx.cursor(dictionary=True)
@@ -46,7 +47,7 @@ class database:
         cnx.close()
         return row
 
-    def about(self, nested=False):    
+    def about(self, nested=False):
         query = """select concat(col.table_schema, '.', col.table_name) as 'table',
                           col.column_name                               as column_name,
                           col.column_key                                as is_key,
@@ -69,57 +70,119 @@ class database:
         table_info = {}
         for row in results:
             table_info[row['table']] = {} if table_info.get(row['table']) is None else table_info[row['table']]
-            table_info[row['table']][row['column_name']] = {} if table_info.get(row['table']).get(row['column_name']) is None else table_info[row['table']][row['column_name']]
-            table_info[row['table']][row['column_name']]['column_comment']     = row['column_comment']
-            table_info[row['table']][row['column_name']]['fk_column_name']     = row['fk_column_name']
-            table_info[row['table']][row['column_name']]['fk_table_name']      = row['fk_table_name']
-            table_info[row['table']][row['column_name']]['is_key']             = row['is_key']
-            table_info[row['table']][row['column_name']]['table']              = row['table']
+            table_info[row['table']][row['column_name']] = {} if table_info.get(row['table']).get(
+                row['column_name']) is None else table_info[row['table']][row['column_name']]
+            table_info[row['table']][row['column_name']]['column_comment'] = row['column_comment']
+            table_info[row['table']][row['column_name']]['fk_column_name'] = row['fk_column_name']
+            table_info[row['table']][row['column_name']]['fk_table_name'] = row['fk_table_name']
+            table_info[row['table']][row['column_name']]['is_key'] = row['is_key']
+            table_info[row['table']][row['column_name']]['table'] = row['table']
         return table_info
 
+    def createTables(self, purge=False, data_path='flask_app/database/'):
+        # Create the tables
+        order: list = ['feedback', 'institutions', 'positions', 'experiences', 'skills']
 
+        # purge = False
+        if purge:
+            for table in order[::-1]:
+                self.query(f"DROP TABLE IF EXISTS {table}")
 
-    def createTables(self, purge=False, data_path = 'flask_app/database/'):
-        print('I create and populate database tables.')
+        for table in order:
+            with open(f'{data_path}create_tables/{table}.sql') as f:
+                query = f.read()
+                self.query(query)
 
+        # Insert data into the tables from csv except for feedback
+        for table in order[1:]:
+            with open(f'{data_path}initial_data/{table}.csv') as f:
+                reader = csv.reader(f)
+                columns = next(reader)
+                rows = list(reader)
+                self.insertRows(table, columns, rows)
 
+        print(self.getResumeData())
 
-    def insertRows(self, table='table', columns=['x','y'], parameters=[['v11','v12'],['v21','v22']]):
-        print('I insert things into the database.')
+    def insertRows(self, table='table', columns=['x', 'y'], parameters=[['v11', 'v12'], ['v21', 'v22']]):
+        # Insert a row into the database
+        query = f"INSERT INTO {table} ({','.join(columns)}) VALUES "
+        for paramList in parameters:
+            query += "("
+            for param in paramList:
+                if param == 'NULL':
+                    query += f"{param},"
+                else:
+                    query += f"'{param}',"
+            query = query[:-1] + "),"
 
+        query = query[:-1] + ";"
+        self.query(query)
 
     def getResumeData(self):
+
+        institutions = self.query("SELECT * FROM institutions")
+
+        resume_data = {}
+
+        for i in range(len(institutions)):
+            positions = self.query(f"SELECT * FROM positions WHERE inst_id = {institutions[i]['inst_id']}")
+            institutions[i]['positions'] = {}
+            for j in range(len(positions)):
+                experiences = self.query(f"SELECT * FROM experiences WHERE position_id = {positions[j]['position_id']}")
+                positions[j]['experiences'] = {}
+                for k in range(len(experiences)):
+                    skills = self.query(f"SELECT * FROM skills WHERE experience_id = {experiences[k]['experience_id']}")
+                    experiences[k]['skills'] = {}
+                    for l in range(len(skills)):
+                        experiences[k]['skills'][l + 1] = skills[l]
+                        skills[l].pop('skill_id')
+                        skills[l].pop('experience_id')
+
+                    positions[j]['experiences'][k + 1] = experiences[k]
+                    experiences[k].pop('experience_id')
+                    experiences[k].pop('position_id')
+
+                institutions[i]['positions'][j + 1] = positions[j]
+                positions[j].pop('position_id')
+                positions[j].pop('inst_id')
+
+            resume_data[i + 1] = institutions[i]
+            institutions[i].pop('inst_id')
+
+        return resume_data
+
+
         # Pulls data from the database to genereate data like this:
-        return {1: {'address' : 'NULL',
-                        'city': 'East Lansing',      
-                       'state': 'Michigan',
-                        'type': 'Academia',
-                         'zip': 'NULL',
-                  'department': 'Computer Science',
-                        'name': 'Michigan State University',
-                   'positions': {1: {'end_date'        : None,
-                                     'responsibilities': 'Teach classes; mostly NLP and Web design.',
-                                     'start_date'      : datetime.date(2020, 1, 1),
-                                     'title'           : 'Instructor',
-                                     'experiences': {1: {'description' : 'Taught an introductory course ... ',
-                                                            'end_date' : None,
-                                                           'hyperlink' : 'https://gitlab.msu.edu',
-                                                                'name' : 'CSE 477',
-                                                              'skills' : {},
-                                                          'start_date' : None
-                                                        },
-                                                     2: {'description' : 'introduction to NLP ...',
-                                                            'end_date' : None,
-                                                            'hyperlink': 'NULL',
-                                                            'name'     : 'CSE 847',
-                                                            'skills': {1: {'name'        : 'Javascript',
-                                                                           'skill_level' : 7},
-                                                                       2: {'name'        : 'Python',
-                                                                           'skill_level' : 10},
-                                                                       3: {'name'        : 'HTML',
-                                                                           'skill_level' : 9},
-                                                                       4: {'name'        : 'CSS',
-                                                                           'skill_level' : 5}},
-                                                            'start_date': None
-                                                        }
-                                                    }}}}}
+        # return {1: {'address': 'NULL',
+        #             'city': 'East Lansing',
+        #             'state': 'Michigan',
+        #             'type': 'Academia',
+        #             'zip': 'NULL',
+        #             'department': 'Computer Science',
+        #             'name': 'Michigan State University',
+        #             'positions': {1: {'end_date': None,
+        #                               'responsibilities': 'Teach classes; mostly NLP and Web design.',
+        #                               'start_date': datetime.date(2020, 1, 1),
+        #                               'title': 'Instructor',
+        #                               'experiences': {1: {'description': 'Taught an introductory course ... ',
+        #                                                   'end_date': None,
+        #                                                   'hyperlink': 'https://gitlab.msu.edu',
+        #                                                   'name': 'CSE 477',
+        #                                                   'skills': {},
+        #                                                   'start_date': None
+        #                                                   },
+        #                                               2: {'description': 'introduction to NLP ...',
+        #                                                   'end_date': None,
+        #                                                   'hyperlink': 'NULL',
+        #                                                   'name': 'CSE 847',
+        #                                                   'skills': {1: {'name': 'Javascript',
+        #                                                                  'skill_level': 7},
+        #                                                              2: {'name': 'Python',
+        #                                                                  'skill_level': 10},
+        #                                                              3: {'name': 'HTML',
+        #                                                                  'skill_level': 9},
+        #                                                              4: {'name': 'CSS',
+        #                                                                  'skill_level': 5}},
+        #                                                   'start_date': None
+        #                                                   }
+        #                                               }}}}}
