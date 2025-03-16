@@ -2,4 +2,3 @@ flask
 gunicorn
 Flask-Failsafe
 mysql-connector-python
-pydevd-pycharm

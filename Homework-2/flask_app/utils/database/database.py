@@ -83,7 +83,6 @@ class database:
         # Create the tables
         order: list = ['feedback', 'institutions', 'positions', 'experiences', 'skills']
 
-        # purge = False
         if purge:
             for table in order[::-1]:
                 self.query(f"DROP TABLE IF EXISTS {table}")
@@ -147,39 +146,3 @@ class database:
             institutions[i].pop('inst_id')
 
         return resume_data
-
-
-        # Pulls data from the database to genereate data like this:
-        # return {1: {'address': 'NULL',
-        #             'city': 'East Lansing',
-        #             'state': 'Michigan',
-        #             'type': 'Academia',
-        #             'zip': 'NULL',
-        #             'department': 'Computer Science',
-        #             'name': 'Michigan State University',
-        #             'positions': {1: {'end_date': None,
-        #                               'responsibilities': 'Teach classes; mostly NLP and Web design.',
-        #                               'start_date': datetime.date(2020, 1, 1),
-        #                               'title': 'Instructor',
-        #                               'experiences': {1: {'description': 'Taught an introductory course ... ',
-        #                                                   'end_date': None,
-        #                                                   'hyperlink': 'https://gitlab.msu.edu',
-        #                                                   'name': 'CSE 477',
-        #                                                   'skills': {},
-        #                                                   'start_date': None
-        #                                                   },
-        #                                               2: {'description': 'introduction to NLP ...',
-        #                                                   'end_date': None,
-        #                                                   'hyperlink': 'NULL',
-        #                                                   'name': 'CSE 847',
-        #                                                   'skills': {1: {'name': 'Javascript',
-        #                                                                  'skill_level': 7},
-        #                                                              2: {'name': 'Python',
-        #                                                                  'skill_level': 10},
-        #                                                              3: {'name': 'HTML',
-        #                                                                  'skill_level': 9},
-        #                                                              4: {'name': 'CSS',
-        #                                                                  'skill_level': 5}},
-        #                                                   'start_date': None
-        #                                                   }
-        #                                               }}}}}

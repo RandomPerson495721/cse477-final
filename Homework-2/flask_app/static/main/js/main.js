@@ -10,7 +10,6 @@ document.getElementById('menu__bar').addEventListener('click', function (e) {
         navMenu.classList.replace('banner__buttons--expanded', 'banner__buttons');
     }
 
-    e.stopPropagation();
 });
 
 // Function to reset the navigation menu to the default class when the window is resized
@@ -20,3 +19,4 @@ window.addEventListener('resize', function () {
         navMenu.classList.replace('banner__buttons--expanded', 'banner__buttons');
     }
 });
+
