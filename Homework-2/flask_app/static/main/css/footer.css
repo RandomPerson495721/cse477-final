@@ -1,0 +1,13 @@
+footer {
+    background-color: #333;
+    color: #ffffff;
+    text-align: center;
+    padding: 1rem 0;
+    /*all text should be centered and justified. */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 100%;
+}
+
