@@ -101,8 +101,6 @@ class database:
                 rows = list(reader)
                 self.insertRows(table, columns, rows)
 
-        print(self.getResumeData())
-
     def insertRows(self, table='table', columns=['x', 'y'], parameters=[['v11', 'v12'], ['v21', 'v22']]):
         # Insert a row into the database
         query = f"INSERT INTO {table} ({','.join(columns)}) VALUES "
@@ -125,26 +123,25 @@ class database:
         resume_data = {}
 
         for i in range(len(institutions)):
-            positions = self.query(f"SELECT * FROM positions WHERE inst_id = {institutions[i]['inst_id']}")
+            positions = self.query(f"SELECT position_id, title, responsibilities, start_date, end_date FROM positions WHERE inst_id = {institutions[i]['inst_id']}")
             institutions[i]['positions'] = {}
+
             for j in range(len(positions)):
-                experiences = self.query(f"SELECT * FROM experiences WHERE position_id = {positions[j]['position_id']}")
+                experiences = self.query(f"SELECT experience_id, name, description, hyperlink, start_date, end_date FROM experiences WHERE position_id = {positions[j]['position_id']}")
                 positions[j]['experiences'] = {}
+
                 for k in range(len(experiences)):
-                    skills = self.query(f"SELECT * FROM skills WHERE experience_id = {experiences[k]['experience_id']}")
+                    skills = self.query(f"SELECT name, skill_level FROM skills WHERE experience_id = {experiences[k]['experience_id']}")
                     experiences[k]['skills'] = {}
+
                     for l in range(len(skills)):
                         experiences[k]['skills'][l + 1] = skills[l]
-                        skills[l].pop('skill_id')
-                        skills[l].pop('experience_id')
 
                     positions[j]['experiences'][k + 1] = experiences[k]
                     experiences[k].pop('experience_id')
-                    experiences[k].pop('position_id')
 
                 institutions[i]['positions'][j + 1] = positions[j]
                 positions[j].pop('position_id')
-                positions[j].pop('inst_id')
 
             resume_data[i + 1] = institutions[i]
             institutions[i].pop('inst_id')

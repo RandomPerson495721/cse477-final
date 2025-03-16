@@ -17,6 +17,10 @@ def home():
 	x     = random.choice(['I started university when I was a wee lad of 15 years.','I have a pet sparrow.','I write poetry.'])
 	return render_template('home.html', fun_fact = x)
 
+@app.route('/projects')
+def projects():
+	return render_template('projects.html')
+
 @app.route('/resume')
 def resume():
 	resume_data = db.getResumeData()

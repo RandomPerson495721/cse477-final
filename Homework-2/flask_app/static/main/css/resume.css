@@ -1,0 +1,25 @@
+.entry{
+    display: grid;
+}
+
+.first__entry {
+    grid-row: 1;
+    justify-self: left;
+    color: #051822;
+}
+
+.second__entry {
+    justify-self: right;
+    align-self: center;
+    grid-row: 1;
+}
+
+.resume {
+    margin: 3%;
+}
+
+.title {
+    grid-row: 1;
+    justify-self: left;
+    color: #000e83;
+}

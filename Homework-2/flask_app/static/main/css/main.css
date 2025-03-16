@@ -1,4 +1,91 @@
+/* Defined variables */
+:root {
+    --white: #ffffff;
+    --black: #000000;
+    --grey: #333333;
+}
+
+/* Main body */
 body {
-background : black;
-color: white;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Roboto', sans-serif;
+    min-height: 100vh;
+}
+
+/* Main content */
+main {
+    flex: 1;
+}
+
+/* Main card */
+.main__card {
+    display: flex;
+    flex-direction: row;
+    max-width: 80vw;
+    max-height: 50vh;
+    contain: content;
+}
+
+/* Main card image */
+.main__card img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+/* Main card text */
+.description__text {
+    min-width: 10vw;
+    margin: 2vh 1vw;
+    padding-bottom: 2vh;
+    text-align: justify;
+    overflow: scroll;
+}
+
+/* Standard flex box column style */
+.column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: var(--white);
+    align-items: center;
+    width: fit-content;
+    height: fit-content;
+    max-width: 40vw;
+}
+
+/* Movbile view */
+@media screen and (max-width: 650px) {
+
+    /* make sure there's no styling for the main and body */
+    html, body {
+
+    }
+
+    /* main card */
+    .main__card {
+        flex-direction: column;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        max-height: none;
+        width: 80vw;
+    }
+
+    /* standard column now takes up the full width available to it*/
+    .column {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    /* description text, change the overflow to visible */
+    .description__text {
+        overflow: visible;
+    }
+
+    /* fun fact */
+    .fun__fact {
+        max-width: 80vw;
+    }
 }

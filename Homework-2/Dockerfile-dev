@@ -17,7 +17,7 @@ RUN mkdir -p /run/sshd
 # Set permissions for the directory
 RUN chmod 755 /run/sshd
 
-# Set the root password for the SSH server (CHANGE THIS PASSWORD!)
+# Set the root password for the SSH server
 RUN echo 'root:root' | chpasswd
 
 # Permit root login via SSH
