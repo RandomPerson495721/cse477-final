@@ -40,7 +40,7 @@ git pull https://gitlab.msu.edu/cse477-spring-2025/course-materials.git
 
 3. Visit [http://0.0.0.0:8080](http://0.0.0.0:8080) to ensure the template is running.
 
-3. Note that the Homework 2 [Dockerfile](Dockerfile-dev) will install and configure a MySQL 8.0 relational data on the container hosting your web application; you shouldn't need to configure the database.
+3. Note that the Homework 2 [Dockerfile](Dockerfile-dev-OLD1) will install and configure a MySQL 8.0 relational data on the container hosting your web application; you shouldn't need to configure the database.
 
 
 

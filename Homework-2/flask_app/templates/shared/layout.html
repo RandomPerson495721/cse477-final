@@ -1,10 +1,8 @@
-<!-- FILL ME IN WITH CODE FOR YOUR PAGE LAYOUT -->
 <!DOCTYPE html>
-<html lang="eng">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-{#    <title>Home</title>#}
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="../../static/main/css/footer.css">
     <link rel="stylesheet" type="text/css" href="../../static/main/css/header.css">
@@ -45,11 +43,11 @@
         <form id="feedback__form" class="feedback__form--hidden" action="/processfeedback" method="post"
               enctype="application/x-www-form-urlencoded">
             <label for="name">Name</label>
-            <input type="text" id="name" name="name" required>
+            <input type="text" title="Name" id="name" name="name" required>
             <label for="email">Email</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" title="Email" id="email" name="email" required>
             <label for="comment">Comment</label>
-            <textarea id="comment" name="comment" required></textarea>
+            <textarea title="Comment" id="comment" name="comment" required></textarea>
             <button type="submit">Submit</button>
         </form>
 

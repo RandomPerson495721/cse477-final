@@ -14,16 +14,8 @@ services:
     ports:
       - "8080:8080"
     # Mounts the local directory to docker container as a volume.
-
-      - "22007:22"
-
-
     volumes:
       - .:/app
-
-    environment:
-        - FLASK_ENV=development
-        - FLASK_DEBUG=1
 
 
   

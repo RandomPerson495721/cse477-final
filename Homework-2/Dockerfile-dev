@@ -2,31 +2,9 @@
 # Access instance using `docker exec -it hw2-container_flask-app bash`
 
 # Instantiate Ubuntu 20.04
-FROM ubuntu:22.04
+FROM ubuntu:20.04
 LABEL maintainer "Mohammad Ghassemi <ghassem3@msu.edu>"
 LABEL description="This is custom Docker Image for Dr. Ghassemi's Web Application Course"
-
-# Install SSH server
-RUN apt-get update && \
-    apt-get install -y openssh-server && \
-    apt-get clean
-
-# Create the /run/sshd directory
-RUN mkdir -p /run/sshd
-
-# Set permissions for the directory
-RUN chmod 755 /run/sshd
-
-# Set the root password for the SSH server
-RUN echo 'root:root' | chpasswd
-
-# Permit root login via SSH
-RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-
-# Enable password authentication
-RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
-
-
 
 # Update Ubuntu Software repository
 RUN apt update
@@ -51,13 +29,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Open ports, set environment variables, start the application.
 EXPOSE 8080 
 ENV PORT 8080
-# SSH port (optional, change if needed)
-EXPOSE 22
 
 #EXPOSE 3336 
 #ENV PORT 3336
 
 ENV FLASK_ENV=development
-CMD service mysql start && exec python3 app.py & /usr/sbin/sshd -D
-
+CMD service mysql start && exec python3 app.py
 # ----------------------------------------------------- 
