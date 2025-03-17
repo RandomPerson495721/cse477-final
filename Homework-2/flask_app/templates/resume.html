@@ -1,5 +1,9 @@
 {% extends 'shared/layout.html' %}
 
+{% block title %}
+Resume
+{% endblock %}
+
 {% block extracss %}
     <link rel="stylesheet" type="text/css" href="../static/main/css/resume.css">
 {% endblock %}
@@ -13,15 +17,23 @@
             <div class="entry">
                 <h2 class="title">{{ inst['name'] }} {% if inst['address'] or inst['city'] or inst['state'] %}
                     </h2> <span class="second__entry">            <!-- Display the institution location -->
-                    {% if inst['address'] %}{{ inst['address'] }}{% if inst['city'] or inst['state'] %},
-                    {% endif %}{% endif %}{% if inst['city'] %}{{ inst['city'] }}{% if inst['state'] %},
-                    {% endif %}{% endif %}
-                    {% if inst['state'] %}{{ inst['state'] }}{% endif %}
-                {% endif %}</span></div>
-            {% if inst['department'] %}
-                <!-- Display the institution degree -->
-                Department of {{ inst['department'] }}
-            {% endif %}
+                    {% if inst['department'] %}
+                        <span class="department">
+                            <!-- Display the institution department -->
+                            Department of {{ inst['department'] }}
+                        </span>
+                        <span class="address">
+                    {% endif %}
+                {% if inst['address'] %}{{ inst['address'] }}{% if inst['city'] or inst['state'] %},
+                {% endif %}{% endif %}{% if inst['city'] %}{{ inst['city'] }}{% if inst['state'] %},
+                {% endif %}{% endif %}
+                {% if inst['state'] %}{{ inst['state'] }}{% endif %}
+                </span>
+                {% endif %}
+
+
+                    </span></div>
+
 
 
             <!-- Check if the institution has positions -->
@@ -38,6 +50,12 @@
                             </div>
                             <!-- Display the position description -->
                             <p>{{ pos['description'] }}</p>
+
+                            <!-- Display the responsibilities -->
+                            {% if pos['responsibilities'] != None %}
+                                <!-- Display the responsibility -->
+                                <span>{{ pos['responsibilities'] }}</span>
+                            {% endif %}
 
                             <!-- Check if the position has experiences -->
                             {% if pos['experiences'] != {} %}

@@ -4,12 +4,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Home</title>
+{#    <title>Home</title>#}
+    <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="../../static/main/css/footer.css">
     <link rel="stylesheet" type="text/css" href="../../static/main/css/header.css">
     <link rel="stylesheet" type="text/css" href="../../static/main/css/navbar.css">
     <link rel="stylesheet" type="text/css" href="../../static/main/css/main.css">
     <link rel="stylesheet" type="text/css" href="../../static/main/css/feedback.css">
+    <link rel="shortcut icon" href="../../static/main/images/favicon.svg">
     {% block extracss %}{% endblock %}
     <script src="{{ url_for('static', filename='main/js/main.js') }}" defer></script>
     <script src="{{ url_for('static', filename='main/js/feedback.js') }}" defer></script>
@@ -40,14 +42,15 @@
     <!-- The main content  -->
     <main>
         <button id="feedback__button">Feedback</button>
-        <form id="feedback__form" class="feedback__form--hidden" action="/processfeedback" method="post">
+        <form id="feedback__form" class="feedback__form--hidden" action="/processfeedback" method="post"
+              enctype="application/x-www-form-urlencoded">
             <label for="name">Name</label>
             <input type="text" id="name" name="name" required>
             <label for="email">Email</label>
             <input type="email" id="email" name="email" required>
             <label for="comment">Comment</label>
             <textarea id="comment" name="comment" required></textarea>
-            <button type="submit">Send</button>
+            <button type="submit">Submit</button>
         </form>
 
         {% block maincontent %}{% endblock %}

@@ -32,6 +32,7 @@ def projects():
 @app.route('/resume')
 def resume():
     resume_data = db.getResumeData()
+    print(type(resume_data))
     pprint(resume_data)
     return render_template('resume.html', resume_data=resume_data)
 
@@ -49,8 +50,4 @@ def processfeedback():
 
     feedback = db.query("SELECT name, email, comment FROM feedback")
 
-    return render_template('feedback.html', allfeedback=feedback)
-
-@app.route('/aboutdatabase', methods=['GET'])
-def aboutdatabase():
-    return jsonify(db.about())
+    return render_template('processfeedback.html', allfeedback=feedback)
