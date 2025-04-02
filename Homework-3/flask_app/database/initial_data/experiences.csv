@@ -1,0 +1,4 @@
+"experience_id","position_id","name","description","hyperlink","start_date","end_date"
+"1","5","Robotics","Mentorship for a High School robotics team","https://www.theflyingtoasters.org/","2022-05-01","2023-07-20"
+"2","5","World Competition Robotics","We competed in Houston at the FRC world competition",NULL,"2022-03-20","2022-03-27"
+"3","1","Study at university","Going to michigan state university","https://msu.edu/","2023-08-21",NULL
