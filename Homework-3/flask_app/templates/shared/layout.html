@@ -1,63 +1,76 @@
-<!-- FILL ME IN WITH CODE FOR YOUR PAGE LAYOUT -->
 <!DOCTYPE html>
-<html lang="eng">
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dr. Ghassemi's personal page</title>
-  <link rel="stylesheet"    href="{{ url_for('static', filename='main/css/main.css') }}">
-  <link rel="shortcut icon" href="{{ url_for('static', filename='main/images/favicon.ico') }}">
-  {% block extracss %}{% endblock %}
-  <script src="{{ url_for('static', filename='main/js/main.js') }}" defer></script>
-  {% block extrajs %}{% endblock %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="../../static/main/css/footer.css">
+    <link rel="stylesheet" type="text/css" href="../../static/main/css/header.css">
+    <link rel="stylesheet" type="text/css" href="../../static/main/css/navbar.css">
+    <link rel="stylesheet" type="text/css" href="../../static/main/css/main.css">
+    <link rel="stylesheet" type="text/css" href="../../static/main/css/feedback.css">
+    <link rel="shortcut icon" href="../../static/main/images/favicon.svg">
+    {% block extracss %}{% endblock %}
+    <script src="{{ url_for('static', filename='main/js/main.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='main/js/feedback.js') }}" defer></script>
+    {% block extrajs %}{% endblock %}
 </head>
 
 <body>
-    <article>
-    <!-- The header  -->
+<article>
     <header>
-        <p> The future home of an amazing header </p>
     </header>
-
-    <!-- The navigation bar -->
+    <!-- Navigation bar -->
     <nav>
-      <div>
-      {% if user == 'Unknown' %}  
-      <p>CSE 477 - Homework 3</p>
-      {% else %}
-      <p>Logged in as {{user}}</p>
-      {% endif %}
-      <br>
-      
+        {% if user == 'Unknown' %}
+        <h1>CSE 477 - Homework 3</h1>
+        {% else %}
+        <h1>Logged in as {{user}}</h1>
+        {% endif %}
 
-      <a href="/home">Home</a>
-      <a href="/chat">Chat</a>
-      <a href="/login">Login</a>
-      <a href="/logout">Logout</a>
+        <!-- This only appears when in mobile mode -->
+        <button id="menu__bar"></button>
+        <!-- Buttons for the navigation bar -->
+        <div class="banner__buttons" id="navMenu">
+            <a href="/home" class="button">Home</a>
+            <a href="/projects" class="button">Projects</a>
+            <a href="/resume" class="button">Resume</a>
+            <a href="/login" class="button">Login</a>
+            <a href="/logout" class="button">Logout</a>
+            <a href="https://www.linkedin.com/in/james-partin-62015723a" class="button" id="social__linkedin"
+               title="Linkedin" target="_blank">
+                <div class="hidden__text">LinkedIn</div>
+            </a>
+        </div>
     </nav>
 
     <!-- The main content  -->
     <main>
-      {% block maincontent %}{% endblock %}
+        <button id="feedback__button">Feedback</button>
+        <form id="feedback__form" class="feedback__form--hidden" action="/processfeedback" method="post"
+              enctype="application/x-www-form-urlencoded">
+            <label for="name">Name</label>
+            <input type="text" title="Name" id="name" name="name" required>
+            <label for="email">Email</label>
+            <input type="email" title="Email" id="email" name="email" required>
+            <label for="comment">Comment</label>
+            <textarea title="Comment" id="comment" name="comment" required></textarea>
+            <button type="submit">Submit</button>
+        </form>
+
+        {% block maincontent %}{% endblock %}
     </main>
 
-    <!-- The footer of the file -->
+    <!-- Footer of the page -->
     <footer>
-        <p>© 2022 Mohammad M. Ghassemi</p>
+        <p> © 2025 James Partin </p>
     </footer>
 
-    </article>
-  
+</article>
+
 </body>
 
 </html>
-
-
-
-
-
-
-
 
 
 

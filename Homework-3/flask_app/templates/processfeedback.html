@@ -1,0 +1,21 @@
+{% extends 'shared/layout.html' %}
+
+{% block title %}
+    Feedback
+{% endblock %}
+
+{% block extracss %}
+{% endblock %}
+
+{% block maincontent %}
+    <h1>Thanks for your feedback - Here's what others had to say</h1>
+    <ul>
+        {% for feedback in allfeedback %}
+            <li>
+                {{ feedback['name'] }} said: {{ feedback['comment'] }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+

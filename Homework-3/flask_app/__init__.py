@@ -16,7 +16,6 @@ socketio = SocketIO()
 @failsafe
 def create_app(debug=False):
 	app = Flask(__name__)
-
 	# NEW IN HOMEWORK 3 ----------------------------
 	# This will prevent issues with cached static files
 	app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0

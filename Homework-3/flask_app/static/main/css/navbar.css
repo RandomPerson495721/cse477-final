@@ -1,0 +1,158 @@
+/* Define variables for button colors */
+:root {
+    --button-color: #051822;
+    --button-hover-color: #43aee4;
+}
+
+/* Define navbar styles */
+nav {
+    background-color: #777F8B;
+    overflow: hidden;
+    align-content: flex-start;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+
+}
+
+/* Define navbar h1 text styles */
+nav h1 {
+    align-content: center;
+    margin-right: 1rem;
+    padding-left: 2vw;
+}
+
+/* define navbar button container styles */
+.banner__buttons {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0;
+    margin-right: 1vw;
+    height: 13vh;
+}
+
+/* button standard container */
+.button {
+    background-color: var(--button-color);
+    opacity: 0.7;
+    border: none;
+    color: var(--button-hover-color);
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-left: 0;
+    margin-right: 2.5%;
+    box-sizing: border-box;
+    align-content: center;
+    width: 6vw;
+    height: 10vh;
+    min-width: fit-content;
+    border-radius: 10%;
+}
+
+/* button hover effect */
+.button:hover {
+    background-color: var(--button-hover-color);
+    color: var(--button-color);
+    opacity: 1;
+    border: 3px solid var(--button-color);
+}
+
+/* Disable menu bar on larger screens */
+#menu__bar {
+    display: none;
+}
+
+/* Define linkedin icon */
+#social__linkedin {
+    background-image: url("../images/social-linkedin.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 3.2rem;
+    width: 3.2rem;
+    padding: 0;
+}
+
+/* Define hidden text for mobile view */
+.hidden__text {
+    display: none;
+}
+
+
+
+@media screen and (max-width: 650px) {
+
+    /* Show the menu bar on smaller screens */
+    #menu__bar {
+        display: flex;
+        top: 0;
+        right: 0;
+        padding: 1rem;
+        aspect-ratio: 1;
+        width: 2rem;
+        cursor: pointer;
+        align-self: center;
+        background-image: url("../images/menu-bar.png");
+        background-color: rgba(51,51,51,0);
+        background-size: cover;
+        background-position: center;
+        border: none;
+        border-radius: 6px;
+    }
+
+    /* hover effect for menu bar */
+    #menu__bar:hover {
+        background-color: rgba(51,51,51,0.5);
+
+        transition: 0.2s;
+    }
+
+    /* hide the banner buttons when not expanded */
+    .banner__buttons {
+        display: none;
+
+    }
+
+    /* show the banner buttons when expanded */
+    .banner__buttons--expanded {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 0.5rem;
+    }
+
+    /* Navbar styles for mobile view */
+    nav {
+        flex-direction: column;
+        text-align: center;
+        padding: 0;
+    }
+
+    /* navbar button container styles */
+    .button {
+        opacity: 0.5;
+        width: 100% !important;
+        font-size: 1rem;
+        border-radius: 0;
+        transition: none;
+    }
+
+    /* button hover effect */
+    .button:hover {
+        opacity: 1;
+        border: none;
+    }
+
+    /* Disable the linkedin button */
+    #social__linkedin {
+        background-image: none;
+        width: inherit;
+    }
+
+    /* show the hidden text */
+    .hidden__text {
+        display: block;
+    }
+}

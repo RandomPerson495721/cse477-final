@@ -1,0 +1,99 @@
+{% extends 'shared/layout.html' %}
+
+{% block title %}
+Resume
+{% endblock %}
+
+{% block extracss %}
+    <link rel="stylesheet" type="text/css" href="../static/main/css/resume.css">
+{% endblock %}
+
+{% block maincontent %}
+    <div class="resume">
+        <hr>
+        <!-- For each institution - generate a row -->
+        {% for inst_id, inst in resume_data.items() %}
+            <!-- Display the institution name -->
+            <div class="entry">
+                <h2 class="title">{{ inst['name'] }} {% if inst['address'] or inst['city'] or inst['state'] %}
+                    </h2> <span class="second__entry">            <!-- Display the institution location -->
+                    {% if inst['department'] != "NULL"%}
+                        <span class="department">
+                            <!-- Display the institution department -->
+                            Department of {{ inst['department'] }}
+                        </span>
+                        <span class="address">
+                    {% endif %}
+                {% if inst['address'] != "NULL" %}{{ inst['address'] }}{% if inst['city'] or inst['state'] %},
+                {% endif %}{% endif %}{% if inst['city'] %}{{ inst['city'] }}{% if inst['state'] %},
+                {% endif %}{% endif %}
+                {% if inst['state'] %}{{ inst['state'] }}{% endif %}
+                </span>
+                {% endif %}
+
+
+                    </span></div>
+
+
+
+            <!-- Check if the institution has positions -->
+            {% if inst['positions'] != {} %}
+                <ul>
+                    <!-- For each position in the institution -->
+                    {% for pos_id, pos in inst['positions'].items() %}
+                        <li>
+                            <div class="entry">
+                                <!-- Display the position title and dates -->
+                                <h3 class="first__entry">{{ pos['title'] }}</h3> <span
+                                    class="second__entry"> {{ pos['start_date'] }} - {% if pos['end_date'] != None %}
+                                {{ pos['end_date'] }} {% else %} Current {% endif %}</span>
+                            </div>
+                            <!-- Display the position description -->
+                            <p>{{ pos['description'] }}</p>
+
+                            <!-- Display the responsibilities -->
+                            {% if pos['responsibilities'] != None %}
+                                <!-- Display the responsibility -->
+                                <span>{{ pos['responsibilities'] }}</span>
+                            {% endif %}
+
+                            <!-- Check if the position has experiences -->
+                            {% if pos['experiences'] != {} %}
+                                <!-- For each experience in the position -->
+                                {% for exp_id, exp in pos['experiences'].items() %}
+                                    <!-- Display the experience name with hyperlink if available, and dates -->
+                                    <h4>
+                                        {% if exp['hyperlink'] != "NULL" %}
+                                            <a href="{{ exp['hyperlink'] }}" target="_blank">
+                                        {% endif %}
+                                        {{ exp['name'] }}
+                                        {% if exp['hyperlink'] != "NULL" %}
+                                            </a>
+                                        {% endif %}
+                                    </h4>
+                                    <!-- Display the experience description -->
+                                    <p>{{ exp['description'] }}</p>
+
+                                    <!-- Check if the experience has skills -->
+                                    {% if exp['skills'] != {} %}
+                                        <h4>Skills</h4>
+                                        <ul>
+                                            <!-- For each skill in the experience -->
+                                            {% for id, skill in exp['skills'].items() %}
+                                                <!-- Display the skill name -->
+                                                <li>{{ skill['name'] }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <hr>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+

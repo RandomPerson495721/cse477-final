@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- This is the title of the page -->
+    <title>Piano Project</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../static/main/css/footer.css">
+    <link rel="stylesheet" type="text/css" href="../static/main/css/header.css">
+    <link rel="stylesheet" type="text/css" href="../static/main/css/main.css">
+    <link rel="stylesheet" type="text/css" href="../static/main/css/navbar.css">
+    <link rel="stylesheet" type="text/css" href="../static/piano/css/piano.css">
+    <link rel="stylesheet" type="text/css" href="../static/main/css/feedback.css">
+
+</head>
+<body>
+<header>
+</header>
+<nav>
+    <!-- This is the navigation bar -->
+    <h1>Homework 3</h1>
+    <button id="menu__bar"></button>
+    <!-- Buttons for the navigation bar -->
+    <div class="banner__buttons" id="navMenu">
+        <a href="home" class="button">Home</a>
+        <a href="projects" class="button">Projects</a>
+        <a href="resume" class="button">Resume</a>
+        <a href="https://www.linkedin.com/in/james-partin-62015723a" class="button" id="social__linkedin"
+           title="Linkedin" target="_blank">
+            <div class="hidden__text">LinkedIn</div>
+        </a>
+    </div>
+</nav>
+<main>
+        <button id="feedback__button">Feedback</button>
+        <form id="feedback__form" class="feedback__form--hidden" action="/processfeedback" method="post"
+              enctype="application/x-www-form-urlencoded">
+            <label for="name">Name</label>
+            <input type="text" title="Name" id="name" name="name" required>
+            <label for="email">Email</label>
+            <input type="email" title="Email" id="email" name="email" required>
+            <label for="comment">Comment</label>
+            <textarea title="Comment" id="comment" name="comment" required></textarea>
+            <button type="submit">Submit</button>
+        </form>
+    <!-- Main content of the page -->
+    <div id="poem-text">
+        "Behold piano great and old, it's master slumbers in far off cold, If you wish to see anew, call out to it - we
+        see you."
+    </div>
+    <div id="piano">
+        <div id="great-old-one" class="hidden">
+            <h1>I have awoken</h1>
+        </div>
+        <div id="piano-text">
+            <h1>The Great Old One</h1>
+        </div>
+        <div id="keyboard">
+            <div class="keyboard" id="keyboard-white">
+                <div class="white-key" id="A">A</div>
+                <div class="white-key" id="S">S</div>
+                <div class="white-key" id="D">D</div>
+                <div class="white-key" id="F">F</div>
+                <div class="white-key" id="G">G</div>
+                <div class="white-key" id="H">H</div>
+                <div class="white-key" id="J">J</div>
+                <div class="white-key" id="K">K</div>
+                <div class="white-key" id="L">L</div>
+                <div class="white-key" id=";">;</div>
+            </div>
+            <div class="keyboard" id="keyboard-black">
+                <div class="black-key" id="W">W</div>
+                <div class="black-key" id="E">E</div>
+                <div class="black-key" id="T">T</div>
+                <div class="black-key" id="Y">Y</div>
+                <div class="black-key" id="U">U</div>
+                <div class="black-key" id="O">O</div>
+                <div class="black-key" id="P">P</div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer of the page -->
+<footer>
+    © 2025 James Partin
+</footer>
+
+</body>
+
+<script src="../static/main/js/feedback.js"></script>
+<script src="../static/main/js/main.js"></script>
+<script src="../static/piano/js/piano.js"></script>
+</html>

@@ -5,6 +5,7 @@ import csv
 from io import StringIO
 import itertools
 import hashlib
+from hashlib import scrypt
 import os
 import cryptography
 from cryptography.fernet import Fernet
@@ -116,13 +117,34 @@ class database:
 # AUTHENTICATION RELATED
 #######################################################################################
     def createUser(self, email='me@email.com', password='password', role='user'):
+        # Encrypt the password
+        password = self.onewayEncrypt(password)
+
+        # Check if the user already exists in the database
+        user = self.query(f"SELECT * FROM users WHERE email = '{email}'")
+        if len(user) > 0:
+            return {'success': 0, 'error': 'User already exists'}
+
+        # Insert the user into the database
+        self.insertRows('users', ['email', 'password', 'role'], [[email, password, role]])
         return {'success': 1}
 
     def authenticate(self, email='me@email.com', password='password'):
+        # Decrypt the password
+        password = self.onewayEncrypt(password)
+        # Get the user from the database
+        user = self.getUser(email)
+        # Check if user exists and password is correct
+        if len(user) == 0:
+            return {'success': 0, 'error': 'User does not exist'}
+
+        if user['password'] != password:
+            return {'success': 0, 'error': 'Incorrect password'}
+
         return {'success': 1}
 
     def onewayEncrypt(self, string):
-        encrypted_string = hashlib.scrypt(string.encode('utf-8'),
+        encrypted_string = scrypt(string.encode('utf-8'),
                                           salt = self.encryption['oneway']['salt'],
                                           n    = self.encryption['oneway']['n'],
                                           r    = self.encryption['oneway']['r'],
@@ -140,5 +162,63 @@ class database:
             message = fernet.decrypt(message).decode()
 
         return message
+
+    def getUser(self, email):
+        return self.query(f"SELECT * FROM users WHERE email = '{email}'")[0]
+
+#######################################################################################
+# RESUME RELATED
+#######################################################################################
+    def getResumeData(self):
+
+        institutions = self.query("SELECT * FROM institutions")
+
+        resume_data = {}
+
+        # Loop through each institution
+        for i in range(len(institutions)):
+            positions = self.query(
+                f"SELECT position_id, title, responsibilities, start_date, end_date FROM positions WHERE inst_id = {institutions[i]['inst_id']}")
+            # Create an empty dictionary for the positions
+            institutions[i]['positions'] = {}
+
+            # Loop through each position
+            for j in range(len(positions)):
+                experiences = self.query(
+                    f"SELECT experience_id, name, description, hyperlink, start_date, end_date FROM experiences WHERE position_id = {positions[j]['position_id']}")
+                # Create an empty dictionary for the experiences
+                positions[j]['experiences'] = {}
+
+                # Loop through each experience
+                for k in range(len(experiences)):
+                    skills = self.query(
+                        f"SELECT name, skill_level FROM skills WHERE experience_id = {experiences[k]['experience_id']}")
+                    # Create an empty dictionary for the skills
+                    experiences[k]['skills'] = {}
+
+                    # Loop through each skill
+                    for l in range(len(skills)):
+                        # Add the skill to the dictionary with an in-order index
+                        experiences[k]['skills'][l + 1] = skills[l]
+
+                    # Add the experience to the dictionary with an in-order index
+                    positions[j]['experiences'][k + 1] = experiences[k]
+
+                    # Pop the experience_id from the dictionary
+                    experiences[k].pop('experience_id')
+
+                # Add the position to the dictionary with an in-order index
+                institutions[i]['positions'][j + 1] = positions[j]
+
+                # Pop the position_id from the dictionary
+                positions[j].pop('position_id')
+
+            # Add the institution to the dictionary with an in-order index
+            resume_data[i + 1] = institutions[i]
+
+            # Pop the inst_id from the dictionary
+            institutions[i].pop('inst_id')
+
+        return resume_data
 
 

@@ -1,4 +1,7 @@
 # Author: Prof. MM Ghassemi <ghassem3@msu.edu>
+import datetime
+from http import HTTPStatus
+
 from flask import current_app as app, send_from_directory
 from flask import render_template, redirect, request, session, url_for, copy_current_request_context
 from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, rooms, disconnect
@@ -27,7 +30,7 @@ def login_required(func):
 
 
 def getUser():
-    return session['email'] if 'email' in session else 'Unknown'
+    return db.reversibleEncrypt('decrypt', session['email']) if 'email' in session else 'Unknown'
 
 
 @app.route('/login')
@@ -44,7 +47,7 @@ def logout():
 @app.route('/processlogin', methods=["POST", "GET"])
 def processlogin():
     form_fields = dict((key, request.form.getlist(key)[0]) for key in list(request.form.keys()))
-    session['email'] = form_fields['email']
+    session['email'] = db.reversibleEncrypt('encrypt', form_fields['email'])
     return json.dumps({'success': 1})
 
 
@@ -74,10 +77,8 @@ def root():
 
 @app.route('/home')
 def home():
-    print(db.query('SELECT * FROM users'))
-    x = random.choice(
-        ['I started university when I was a wee lad of 15 years.', 'I have a pet sparrow.', 'I write poetry.'])
-    return render_template('home.html', user=getUser(), fun_fact=x)
+    # print(db.query('SELECT * FROM users'))
+    return render_template('home.html', user=getUser())
 
 
 @app.route("/static/<path:path>")
@@ -91,3 +92,54 @@ def add_header(r):
     r.headers["Pragma"] = "no-cache"
     r.headers["Expires"] = "0"
     return r
+
+@app.route('/projects')
+def projects():
+    return render_template('projects.html', user=getUser())
+
+
+@app.route('/resume')
+def resume():
+    resume_data = db.getResumeData()
+    print(type(resume_data))
+    pprint(resume_data)
+    return render_template('resume.html', resume_data=resume_data, user=getUser())
+
+
+@app.route('/processfeedback', methods=['POST'])
+def processfeedback():
+    feedback = request.form
+
+    # check to make sure the required fields are present
+    if 'name' not in feedback or 'email' not in feedback:
+        return 'Missing required fields', HTTPStatus.BAD_REQUEST
+
+
+    db.insertRows('feedback', ['name', 'email', 'comment'], [[feedback['name'], feedback['email'], feedback['comment'] if 'comment' in feedback else 'NULL']])
+
+    feedback = db.query("SELECT name, email, comment FROM feedback")
+
+    return render_template('processfeedback.html', allfeedback=feedback, user=getUser())
+
+@app.route('/piano')
+def piano():
+    return render_template('piano.html', user=getUser())
+
+#######################################################################################
+# TESTING
+#######################################################################################
+def custom_serializer(obj):
+    if isinstance(obj, (datetime.date, datetime.datetime)):
+        return obj.isoformat()
+    raise TypeError(f"Type {type(obj)} not serializable")
+
+# This is a route that will return a jsonified version of whatever table is specified
+@app.route('/get/<table>')
+def get_table(table):
+    data = db.query(f'SELECT * FROM {table}')
+    response = app.response_class(
+        response=json.dumps(data, default=custom_serializer),
+        status=200,
+        mimetype='application/json'
+    )
+    return response

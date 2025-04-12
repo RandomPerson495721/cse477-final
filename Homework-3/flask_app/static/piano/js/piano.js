@@ -1,106 +1,112 @@
-const keys  = document.querySelectorAll(".key"), 
-      note  = document.querySelector(".nowplaying"),
-      hints = document.querySelectorAll(".hints");
-      doom  = 0;
-var   array = [];
+const sound = {
+    65:"https://carolinegabriel.com/demo/js-keyboard/sounds/040.wav",
+    87:"https://carolinegabriel.com/demo/js-keyboard/sounds/041.wav",
+    83:"https://carolinegabriel.com/demo/js-keyboard/sounds/042.wav",
+    69:"https://carolinegabriel.com/demo/js-keyboard/sounds/043.wav",
+    68:"https://carolinegabriel.com/demo/js-keyboard/sounds/044.wav",
+    70:"https://carolinegabriel.com/demo/js-keyboard/sounds/045.wav",
+    84:"https://carolinegabriel.com/demo/js-keyboard/sounds/046.wav",
+    71:"https://carolinegabriel.com/demo/js-keyboard/sounds/047.wav",
+    89:"https://carolinegabriel.com/demo/js-keyboard/sounds/048.wav",
+    72:"https://carolinegabriel.com/demo/js-keyboard/sounds/049.wav",
+    85:"https://carolinegabriel.com/demo/js-keyboard/sounds/050.wav",
+    74:"https://carolinegabriel.com/demo/js-keyboard/sounds/051.wav",
+    75:"https://carolinegabriel.com/demo/js-keyboard/sounds/052.wav",
+    79:"https://carolinegabriel.com/demo/js-keyboard/sounds/053.wav",
+    76:"https://carolinegabriel.com/demo/js-keyboard/sounds/054.wav",
+    80:"https://carolinegabriel.com/demo/js-keyboard/sounds/055.wav",
+    // Firefox uses 59 for semicolon, the rest use 186
+    59:"https://carolinegabriel.com/demo/js-keyboard/sounds/056.wav",
+    186:"https://carolinegabriel.com/demo/js-keyboard/sounds/056.wav",
+};
 
+const history = [];
+let awoken = false;
 
+// Key elements
+const whiteKeys = document.getElementsByClassName('white-key');
+const blackKeys = document.getElementsByClassName('black-key');
 
-const scary = "https://orangefreesounds.com/wp-content/uploads/2020/09/Creepy-piano-sound-effect.mp3?_=1"
-
-const sound = {65:"http://carolinegabriel.com/demo/js-keyboard/sounds/040.wav",
-               87:"http://carolinegabriel.com/demo/js-keyboard/sounds/041.wav",
-               83:"http://carolinegabriel.com/demo/js-keyboard/sounds/042.wav",
-               69:"http://carolinegabriel.com/demo/js-keyboard/sounds/043.wav",
-               68:"http://carolinegabriel.com/demo/js-keyboard/sounds/044.wav",
-               70:"http://carolinegabriel.com/demo/js-keyboard/sounds/045.wav",
-               84:"http://carolinegabriel.com/demo/js-keyboard/sounds/046.wav",
-               71:"http://carolinegabriel.com/demo/js-keyboard/sounds/047.wav",
-               89:"http://carolinegabriel.com/demo/js-keyboard/sounds/048.wav",
-               72:"http://carolinegabriel.com/demo/js-keyboard/sounds/049.wav",
-               85:"http://carolinegabriel.com/demo/js-keyboard/sounds/050.wav",
-               74:"http://carolinegabriel.com/demo/js-keyboard/sounds/051.wav",
-               75:"http://carolinegabriel.com/demo/js-keyboard/sounds/052.wav",
-               79:"http://carolinegabriel.com/demo/js-keyboard/sounds/053.wav",
-               76:"http://carolinegabriel.com/demo/js-keyboard/sounds/054.wav",
-               80:"http://carolinegabriel.com/demo/js-keyboard/sounds/055.wav",
-               186:"http://carolinegabriel.com/demo/js-keyboard/sounds/056.wav"};
-
-// ------------------------------------------------------------------------
-// Listens for a change to the pressed key, and updates the hidden phrase.
-// ------------------------------------------------------------------------
-note.addEventListener('DOMSubtreeModified', function(){
-  const result = note.innerHTML;
-  array += result;
-
-  if (array.length > 8) {
-    array = array.slice(1,9);
+// Function to show the note names when the mouse is over the keys
+const showNote = function () {
+    for (let i = 0; i < whiteKeys.length; i++) {
+        whiteKeys[i].style.color = 'rgba(0,0,0,1)';
     }
-  console.log('The array'); console.log(array);
 
-  if (array === "WESEEYOU" && doom === 0){
-    doom = 1;
-    document.querySelector(".bkgdc").style.opacity=0;
-    document.querySelector(".bgimg").style.opacity=1;
-    document.querySelector(".keys").style.opacity=0;
+    for (let i = 0; i < blackKeys.length; i++) {
+        blackKeys[i].style.color = 'rgba(255,255,255,1)';
+    }
+}
 
+// Function to hide the note names when the mouse is not over the keys
+const hideNote = function () {
+    for (let i = 0; i < whiteKeys.length; i++) {
+        whiteKeys[i].style.color = 'rgba(0,0,0,0)';
+    }
 
-    const audio = new Audio(scary);
-    audio.currentTime = 0;
+    for (let i = 0; i < blackKeys.length; i++) {
+        blackKeys[i].style.color = 'rgba(255,255,255,0)';
+    }
+}
+
+// Function to handle the key press event
+const keyPress = function (event) {
+    let key = document.getElementById(event.key.toUpperCase());
+    if (key === null || awoken) {
+        return;
+    }
+    const audio = new Audio(sound[event.keyCode]);
     audio.play();
-    document.getElementById("message").innerHTML = "I have awoken."
-    } 
-});
-
-// ------------------------------------------------------------------------
-// We use an e here because we selected a set of KEYS!
-// ------------------------------------------------------------------------
-function playNote(e) {
-  //console.log(e);
-  
-  if (doom === 1) return;
-
-  console.log(e.keyCode);
-
-  const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
-  if (!key) return;
-  const keyPressed = key.firstChild.innerHTML;
-
-  key.classList.add("playing");
-  note.innerHTML = keyPressed;
-
-  // play the audio
-  const audio = new Audio(sound[e.keyCode]);
-  audio.currentTime = 0;
-  audio.play();
-
+    if (key.className === 'white-key') {
+        key.style.backgroundColor = 'rgba(255,255,255,0.5)';
+    } else {
+        key.style.backgroundColor = 'rgba(0,0,0,0.5)';
+    }
 }
 
-function removeTransition(e) {
-  if (e.propertyName !== "transform") return;
-  this.classList.remove("playing");
+// Function to handle the key release event
+const keyRelease = function (event) {
+    let key = document.getElementById(event.key.toUpperCase());
+    if (key === null || awoken) {
+        return;
+    }
+
+    // Add the key to the history
+    history.push(event.key.toUpperCase());
+    // If the history is longer than 8, remove the first element
+    if (history.length > 8) {
+        history.shift();
+    }
+
+    // If it's a white key, style appropriately, else style black key
+    if (key.className === 'white-key') {
+        key.style.backgroundColor = 'rgba(255,255,255,1)';
+    } else {
+        key.style.backgroundColor = 'rgba(0,0,0,1)';
+    }
+
+    // If the history is "WESEEYOU", show the great old one, converted to uppercase for consistency
+    if (history.join('') === "WESEEYOU")
+    {
+        document.getElementById('great-old-one').classList.replace('hidden', 'visible');
+        awoken = true;
+        /* Play creepy music */
+        const audio = new Audio("https://orangefreesounds.com/wp-content/uploads/2020/09/Creepy-piano-sound-effect.mp3?_=1");
+        audio.play();
+    }
 }
 
-// -------------------------------------------------------------------------
-// FOR THE HINTS
-// --------------------------------------------------------------------------
-function hintsOn(e, index) {
-  //console.log(e)
-  console.log(e.fromElement.id)
-  const key = document.querySelector(`.key[data-key="${e.fromElement.id}"]`);
-  key/
-  console.log(key)
-  if (!key) return;
+// Add event listeners to the document to handle user keyboard input
+document.addEventListener('keydown', keyPress);
+document.addEventListener('keyup', keyRelease);
 
-  key.setAttribute("background", "red")
-  key.setAttribute("style", "transition-delay:" + 50 + "ms");
+// Add event listeners to the keys
+for (let i = 0; i < blackKeys.length; i++) {
+    blackKeys[i].addEventListener('mouseover', showNote);
+    blackKeys[i].addEventListener('mouseout', hideNote);
 }
 
-//hints.forEach(hintsOn);
-keys.forEach(key => key.addEventListener("transitionend", removeTransition));
-
-//This is what binds 'e'.
-window.addEventListener("keydown", playNote);
-window.addEventListener("mouseover", hintsOn);
-
-
+for (let i = 0; i < whiteKeys.length; i++) {
+    whiteKeys[i].addEventListener('mouseover', showNote);
+    whiteKeys[i].addEventListener('mouseout', hideNote);
+}

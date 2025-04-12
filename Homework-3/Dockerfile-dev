@@ -30,7 +30,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 8080 
 ENV PORT 8080
 
-#EXPOSE 3336 
+#EXPOSE 3336
 #ENV PORT 3336
 
 ENV FLASK_ENV=development

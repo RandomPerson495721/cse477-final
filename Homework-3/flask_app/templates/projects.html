@@ -1,0 +1,38 @@
+{% extends 'shared/layout.html' %}
+
+{% block title %}
+Projects
+{% endblock %}
+
+{% block extracss %}
+{% endblock %}
+
+{% block maincontent %}
+    <!-- Main content of the page -->
+    <div class="main__card">
+        <div class="column">
+            <h3> This page is to show off all the work in CSE 477. Currently I have completed the Piano project.</h3>
+        </div>
+    </div>
+
+    <div class="main__card">
+        <div class="column">
+            <a href="piano">
+                <img loading="lazy" src="../static/main/images/piano.jpeg" alt="Piano Project">
+            </a>
+        </div>
+        <div class="column">
+            <div class="description__text">
+                <h1>Piano Project</h1>
+                <p>
+                    This is a project I completed for CSE 477. It is a simple piano that plays notes when you click on
+                    the keys.
+                </p>
+                <a href="piano">Click here to go to the piano page.</a>
+            </div>
+        </div>
+    </div>
+    <!--<p>A fun fact about me: <b>{{fun_fact}}</b></p>-->
+{% endblock %}
+
+
