@@ -164,7 +164,12 @@ class database:
         return message
 
     def getUser(self, email):
-        return self.query(f"SELECT * FROM users WHERE email = '{email}'")[0]
+        users = self.query(f"SELECT * FROM users WHERE email = '{email}'")
+        if len(users) == 0:
+            return []
+
+        # Return the first user
+        return users[0]
 
 #######################################################################################
 # RESUME RELATED

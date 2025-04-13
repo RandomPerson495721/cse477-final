@@ -32,7 +32,6 @@ def login_required(func):
 def getUser():
     return db.reversibleEncrypt('decrypt', session['email']) if 'email' in session else 'Unknown'
 
-
 @app.route('/login')
 def login():
     return render_template('login.html')
@@ -41,12 +40,21 @@ def login():
 @app.route('/logout')
 def logout():
     session.pop('email', default=None)
-    return redirect('/')
+    return redirect('/home')
 
 
 @app.route('/processlogin', methods=["POST", "GET"])
 def processlogin():
     form_fields = dict((key, request.form.getlist(key)[0]) for key in list(request.form.keys()))
+
+    # Check if the email and password are correct
+    user = db.getUser(form_fields['email'])
+
+    if len(user) == 0 or db.authenticate(form_fields['email'], form_fields['password'])['success'] == 0:
+        session['login_attempt'] = session.get('login_attempt', 0) + 1
+        return json.dumps({'success': 0, 'error': 'Incorrect email or password', 'login_attempt': session['login_attempt']})
+
+    session['login_attempt'] = 0
     session['email'] = db.reversibleEncrypt('encrypt', form_fields['email'])
     return json.dumps({'success': 1})
 
@@ -57,15 +65,31 @@ def processlogin():
 @app.route('/chat')
 @login_required
 def chat():
+    # Check if the user is logged in
+    if 'email' not in session or db.authenticate(db.reversibleEncrypt('decrypt', session['email']), 'password')['success'] == 0:
+        return redirect('/login')
+
+
     return render_template('chat.html', user=getUser())
 
 
 @socketio.on('joined', namespace='/chat')
 def joined(message):
     join_room('main')
-    emit('status', {'msg': getUser() + ' has entered the room.', 'style': 'width: 100%;color:blue;text-align: right'},
+    emit('status', {'msg': getUser() + ' has entered the room.', 'style': 'width: 100%;color:#0000FF;text-align: right'},
          room='main')
 
+@socketio.on('send-message', namespace='/chat')
+def send_message(message):
+    role = db.getUser(getUser())['role']
+    style = 'width: 100%;color:#0000FF;text-align: right' if role == 'owner' else 'width: 100%;color:#808080;text-align: left'
+    emit('status', {'msg': message['msg'], 'style': style}, room='main')
+
+@socketio.on('left', namespace='/chat')
+def left(message):
+    leave_room('main')
+    emit('status', {'msg': getUser() + ' has left the room.', 'style': 'width: 100%;color:#0000FF;text-align: right'},
+         room='main')
 
 #######################################################################################
 # OTHER
