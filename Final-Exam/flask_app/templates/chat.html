@@ -1,0 +1,30 @@
+{% extends 'shared/layout.html' %}
+
+
+{% block title %}
+Chat
+{% endblock %}
+
+{% block extracss %}
+<link rel="stylesheet" type="text/css" href="../static/main/css/chat.css">
+{% endblock %}
+
+{% block extrajs %}
+<script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js" defer></script>
+<script src="https://cdn.socket.io/3.1.1/socket.io.min.js" defer></script>
+<script src="../static/main/js/chat.js" type="text/javascript" charset="utf-8" defer></script>
+{% endblock %}
+
+
+{% block maincontent %}
+<p>Chat</p>
+
+<div id='chat' contenteditable="false">
+</div>
+
+<p class="email">
+    <input title="Message" type="text" id="message_input" placeholder="Enter Your Message Here"/>
+</p>
+
+<a id="leave" class="button" href="/home">Leave</a>
+{% endblock %}

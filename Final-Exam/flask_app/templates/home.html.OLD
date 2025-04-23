@@ -1,0 +1,31 @@
+{% extends 'shared/layout.html' %}
+
+{% block maincontent %}
+      <div class="space"></div>
+
+      <!-- A block of content -->
+      <div class="row">        
+        <div class="half-column x-center y-center">
+          <img src="static/main/images/headshot.png" >
+        </div>
+
+        <div class="half-column x-center">
+          <p class="small-txt">
+            <span class="medium-txt">Prof. Ghassemi </span>
+            is an award winning scholar and entrepreneur. He holds a Ph.D from the Massachusetts Institute of Technology in electrical engineering and computer science with a focus on artificial intelligence, and a minor in institutional communications.
+            <br><br>
+            Mohammad has over 10 years of experience working in technical and strategic consulting. In prior engagements, he has guided innovation strategy, and built data-driven technologies that leverage AI+'Big Data' to increase customer engagement, improve cost effectiveness, and prioritize innovation opportunities. He was a recipient of the nationally renowned Goldwater scholarship, the internationally renowned Gates-Cambridge award, and several awards from the National Institutes of Health.
+            <br><br>
+            For his entrepreneurial accomplishments, he has received awards from the National Science Foundation, the Sandbox Innovation Foundation, The Legatum Foundation, The Mind Hand Heart Innovation Fund and MassChallenge. He was a finalist in the Bell-Labs Innovation Prize, and a recent winner of the internationally competitive MassChallenge. He holds multiple US Patents, has published over 30 peer-reviewed papers in several of the most highly respected scientific journals including: Nature Scientific Data, Science Translational Medicine, Proceedings of the IEEE, and the Proceedings of the Association for the Advancement of Artificial Intelligence. His work has been featured by the BBC, NPR, The Wall Street Journal and Newsweek.
+          </p>
+        </div>
+      </div>
+
+      <!-- Another block of content -->
+      <div class="space"><hr></div>
+
+      <p class="medium-txt x-center ">A fun fact about me: </p>
+      <p class="x-center small-txt"> {{fun_fact}}</p>
+{% endblock %}
+
+

@@ -1,0 +1,4 @@
+"inst_id","type","name","department","address","city","state","zip"
+"1","Academia","Michigan State University","Computer Science",NULL,"East Lansing","Michigan","48824"
+"2","Academia","Schoolcraft College",NULL,"18600 Haggerty Rd","Livonia","Michigan","48152"
+"3","Academia","South Lyon East High School",NULL,"52200 W. Ten Mile Rd","South Lyon","Michigan","48178"

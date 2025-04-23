@@ -1,0 +1,55 @@
+{% extends 'shared/layout.html' %}
+
+{% block title %}
+Piano
+{% endblock %}
+
+{% block extracss %}
+<link rel="stylesheet" type="text/css" href="../static/piano/css/piano.css">
+{% endblock %}
+
+{% block extrajs %}
+<script src="{{ url_for('static', filename='/piano/js/piano.js') }}" defer></script>
+{% endblock %}
+
+{% block maincontent %}
+     <!-- Main content of the page -->
+    <div id="poem-text">
+        "Behold piano great and old, it's master slumbers in far off cold, If you wish to see anew, call out to it - we
+        see you."
+    </div>
+    <div id="piano">
+        <div id="great-old-one" class="hidden">
+            <h1>I have awoken</h1>
+        </div>
+        <div id="piano-text">
+            <h1>The Great Old One</h1>
+        </div>
+        <div id="keyboard">
+            <div class="keyboard" id="keyboard-white">
+                <div class="white-key" id="A">A</div>
+                <div class="white-key" id="S">S</div>
+                <div class="white-key" id="D">D</div>
+                <div class="white-key" id="F">F</div>
+                <div class="white-key" id="G">G</div>
+                <div class="white-key" id="H">H</div>
+                <div class="white-key" id="J">J</div>
+                <div class="white-key" id="K">K</div>
+                <div class="white-key" id="L">L</div>
+                <div class="white-key" id=";">;</div>
+            </div>
+            <div class="keyboard" id="keyboard-black">
+                <div class="black-key" id="W">W</div>
+                <div class="black-key" id="E">E</div>
+                <div class="black-key" id="T">T</div>
+                <div class="black-key" id="Y">Y</div>
+                <div class="black-key" id="U">U</div>
+                <div class="black-key" id="O">O</div>
+                <div class="black-key" id="P">P</div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+

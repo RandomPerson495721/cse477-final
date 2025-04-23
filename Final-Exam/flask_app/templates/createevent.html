@@ -1,0 +1,32 @@
+{% extends 'shared/layout.html' %}
+
+{% block title %}
+Create Event
+{% endblock %}
+
+{% block extrajs %}
+
+{% endblock %}
+
+
+{% block maincontent %}
+<br><br>
+<h1>Create event</h1>
+<form id="create_event_form" method="POST" action="/processcreateevent">
+    <label for="event_name_input">Event Name:</label><br>
+    <input title="event_name" type="text" id="event_name_input" name="event_name" required><br>
+    <label for="start_date_input">Start Date:</label><br>
+    <input title="start_date" type="date" id="start_date_input" name="start_date" required><br>
+    <label for="end_date_input">End Date:</label><br>
+    <input title="end_date" type="date" id="end_date_input" name="end_date" required><br>
+    <label for="start_time_input">Start Time:</label><br>
+    <input title="start_time" type="time" id="start_time_input" name="start_time" required><br>
+    <label for="end_time_input">End Time:</label><br>
+    <input title="end_time" type="time" id="end_time_input" name="end_time" required><br>
+    <label for="invitee_emails_input">List of Invitee Emails (Comma separated):</label><br>
+    <input title="invitee_emails" type="text" id="invitee_emails_input" name="invitee_emails"><br><br>
+    <input title="submit" type="submit" value="Submit"/>
+<br/>
+{% endblock %}
+
+

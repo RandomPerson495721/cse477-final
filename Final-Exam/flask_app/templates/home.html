@@ -1,0 +1,35 @@
+{% extends 'shared/layout.html' %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block extracss %}
+{% endblock %}
+
+{% block maincontent %}
+<!-- Main content of the page -->
+<div class="main__card">
+    <div class="column">
+        <img loading="lazy" src="../static/main/images/profile.webp" alt="Profile Picture"/>
+    </div>
+    <div class="column">
+        <div class="description__text">
+            <h2>James Partin</h2>
+            <p>Welcome to my website. I'm a Computer Science major at Michigan State University. This is a website I
+                built for CSE477 Homework 2.</p>
+        </div>
+
+    </div>
+</div>
+<!-- Fun fact about me -->
+<div class="fun__fact">
+    <h3>Fun fact</h3>
+    <p>I have three dogs and one cat.</p>
+</div>
+
+
+<!--<p>A fun fact about me: <b>{{fun_fact}}</b></p>-->
+{% endblock %}
+
+
