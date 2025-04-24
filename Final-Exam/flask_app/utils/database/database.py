@@ -1,13 +1,10 @@
+from datetime import datetime, timedelta, time
+
 import mysql.connector
-import glob
-import json
 import csv
 from io import StringIO
 import itertools
-import hashlib
 from hashlib import scrypt
-import os
-import cryptography
 from cryptography.fernet import Fernet
 from math import pow
 
@@ -67,51 +64,51 @@ class database:
         ''' FILL ME IN WITH CODE THAT CREATES YOUR DATABASE TABLES.'''
 
         #should be in order or creation - this matters if you are using forign keys.
-         
+        purge = False
+
         if purge:
             for table in self.tables[::-1]:
                 self.query(f"""DROP TABLE IF EXISTS {table}""")
             
-        # Execute all SQL queries in the /database/create_tables directory.
-        for table in self.tables:
-            
-            #Create each table using the .sql file in /database/create_tables directory.
-            with open(data_path + f"create_tables/{table}.sql") as read_file:
-                create_statement = read_file.read()
-            self.query(create_statement)
+            # Execute all SQL queries in the /database/create_tables directory.
+            for table in self.tables:
 
-            # Import the initial data
-            try:
-                params = []
-                with open(data_path + f"initial_data/{table}.csv") as read_file:
-                    scsv = read_file.read()            
-                for row in csv.reader(StringIO(scsv), delimiter=','):
-                    params.append(row)
-            
-                # Insert the data
-                cols = params[0]; params = params[1:] 
-                self.insertRows(table = table,  columns = cols, parameters = params)
-            except:
-                print('no initial data')
+                #Create each table using the .sql file in /database/create_tables directory.
+                with open(data_path + f"create_tables/{table}.sql") as read_file:
+                    create_statement = read_file.read()
+                self.query(create_statement)
 
-    def insertRows(self, table='table', columns=['x','y'], parameters=[['v11','v12'],['v21','v22']]):
-        
-        # Check if there are multiple rows present in the parameters
-        has_multiple_rows = any(isinstance(el, list) for el in parameters)
-        keys, values      = ','.join(columns), ','.join(['%s' for x in columns])
-        
-        # Construct the query we will execute to insert the row(s)
-        query = f"""INSERT IGNORE INTO {table} ({keys}) VALUES """
-        if has_multiple_rows:
-            for p in parameters:
-                query += f"""({values}),"""
-            query     = query[:-1] 
-            parameters = list(itertools.chain(*parameters))
-        else:
-            query += f"""({values}) """                      
-        
-        insert_id = self.query(query,parameters)[0]['LAST_INSERT_ID()']         
-        return insert_id
+                # Import the initial data
+                try:
+                    params = []
+                    with open(data_path + f"initial_data/{table}.csv") as read_file:
+                        scsv = read_file.read()
+                    for row in csv.reader(StringIO(scsv), delimiter=','):
+                        params.append(row)
+
+                    # Insert the data
+                    cols = params[0]; params = params[1:]
+                    self.insertRows(table = table,  columns = cols, parameters = params)
+                except:
+                    print('no initial data')
+
+    def insertRows(self, table='table', columns=['x', 'y'], parameters=[['v11', 'v12'], ['v21', 'v22']]):
+        # Insert a row into the database
+        query = f"INSERT INTO {table} ({','.join(columns)}) VALUES "
+
+        # For each row, add the values to the query
+        for paramList in parameters:
+            query += "("
+            # For each value in the row, add it to the query
+            for param in paramList:
+                if param == 'NULL':
+                    query += f"{param},"
+                else:
+                    query += f"'{param}',"
+            query = query[:-1] + "),"
+
+        query = query[:-1] + ";"
+        self.query(query)
 
 #######################################################################################
 # AUTHENTICATION RELATED
@@ -171,6 +168,25 @@ class database:
         # Return the first user
         return users[0]
 
+    def getEvent(self, event_id):
+        events = self.query(f"SELECT * FROM events WHERE event_id = '{event_id}'")
+        if len(events) == 0:
+            return []
+
+        # Turn the event into a dictionary
+        event = events[0]
+        event['invitee_emails'] = event['invitee_emails'].split(',')
+        event['invitee_emails'] = [e.strip() for e in event['invitee_emails']]
+        start_time: timedelta = event['start_time']
+        end_time: timedelta = event['end_time']
+        event['slots'] = int((end_time - start_time) / timedelta(minutes=30))
+
+        start_date: datetime = event['start_date']
+        end_date: datetime = event['end_date']
+        event['days'] = (end_date - start_date).days + 1
+        # Return the first event
+        return event
+
     def createEvent(self, user, name, start_date, end_date, start_time, end_time, invitee_emails):
         # Event Name: a short descriptive title for the event (e.g., “Team Meeting Scheduler”).
         # Start Date and End Date: these define the date range over which availability will be collected. Both dates must be inclusive.
@@ -179,6 +195,28 @@ class database:
         self.insertRows('events', ['owner_id', 'name', 'start_date', 'end_date', 'start_time', 'end_time', 'invitee_emails'], [[user, name, start_date, end_date, start_time, end_time, invitee_emails]])
 
         return {'success': 1}
+
+    def getUserAvailability(self, user, event_id):
+        # Get the event
+        query = f"SELECT e_column, e_row, status FROM event_user_slots WHERE event_id = {event_id} AND user_id = {user} ORDER BY e_column, e_row"
+        slots = self.query(query)
+        if len(slots) == 0:
+            return []
+
+        res: dict = {}
+        # turn it into a dictionary
+        for i in range(len(slots)):
+            res[(slots[i]['e_row'], slots[i]['e_column'])] = slots[i]['status']
+
+        return res
+
+    def updateUserAvailability(self, event_id, user, slots):
+        # Update the user's availability
+        for slot in slots:
+            self.query(f"DELETE from event_user_slots WHERE event_id = {event_id} AND user_id = {user} AND e_column = {slot['column']} AND e_row = {slot['row']}")
+            self.insertRows('event_user_slots', ['event_id', 'user_id', 'e_column', 'e_row', 'status'], [[event_id, user, slot['column'], slot['row'], slot['status']]])
+
+        pass
 
 # #######################################################################################
 # # RESUME RELATED

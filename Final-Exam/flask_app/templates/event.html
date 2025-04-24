@@ -1,0 +1,45 @@
+{% extends 'shared/layout.html' %}
+
+{% block title %}
+Event
+{% endblock %}
+
+{% block extrajs %}
+<script src="{{ url_for('static', filename='../../static/main/js/event.js') }}" defer></script>
+{% endblock %}
+
+{% block extracss %}
+<link rel="stylesheet" href="{{ url_for('static', filename='../../static/main/css/event.css') }}">
+{% endblock %}
+
+
+{% block maincontent %}
+<h1>Title: {{ event.name }}</h1>
+<h2>Date: {{ event.start_date }} - {{ event.end_date }}</h2>
+
+<h3>Time: {{ event.start_time }} - {{ event.end_time }}</h3>
+
+<div class="time__selector">
+    <div class="time__grid">
+        {% for day in range(event.days) %}
+            <div class="time__block">
+                {% for slot in range(event.slots) %}
+                <div id="slot_{{slot}}_{{day}}" data-column="{{day}}" data-row="{{slot}}" data-availability="{{slots[(slot,day)]}}" class="slot {{slots[(slot,day)]}}" onmousedown="mouseDownHandler(event)" onmouseover="mouseOverHandler(event)" >
+                </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+    <!-- dropdown to select mode -->
+    <br/>
+    <div class="mode__selector">
+        <label for="mode">Select Availability Mode:</label>
+        <select id="mode" name="mode">
+            <option value="available">Available</option>
+            <option value="maybe">Maybe</option>
+            <option value="unavailable">Unavailable</option>
+        </select>
+</div>
+{% endblock %}
+
+

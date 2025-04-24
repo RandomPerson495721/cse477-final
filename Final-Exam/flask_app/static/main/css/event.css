@@ -1,0 +1,39 @@
+.time__block {
+    margin: 0 5rem;
+}
+
+.time__grid {
+    display: flex;
+    flex-direction: row;
+}
+
+.slot {
+    background-color: #808080;
+    width: 3rem;
+    height: 1rem;
+
+    border-top-style: solid;
+    border-width: 0.05rem;
+    border-bottom-style: solid;
+    border-color: #000000;
+}
+
+.slot:hover {
+    background-color: #9e9e9e;
+}
+
+.available {
+    background-color: #00ff00;
+}
+
+.slot:hover.available {
+    background-color: #00cc00;
+}
+
+.maybe {
+    background-color: #ffff54;
+}
+
+.slot:hover.maybe {
+    background-color: #cccc00;
+}

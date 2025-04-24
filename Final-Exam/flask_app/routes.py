@@ -32,6 +32,7 @@ def login_required(func):
 def getUser():
     return db.reversibleEncrypt('decrypt', session['email']) if 'email' in session else 'Unknown'
 
+
 @app.route('/login')
 def login():
     return render_template('login.html')
@@ -52,7 +53,8 @@ def processlogin():
 
     if len(user) == 0 or db.authenticate(form_fields['email'], form_fields['password'])['success'] == 0:
         session['login_attempt'] = session.get('login_attempt', 0) + 1
-        return json.dumps({'success': 0, 'error': 'Incorrect email or password', 'login_attempt': session['login_attempt']})
+        return json.dumps(
+            {'success': 0, 'error': 'Incorrect email or password', 'login_attempt': session['login_attempt']})
 
     session['login_attempt'] = 0
     session['email'] = db.reversibleEncrypt('encrypt', form_fields['email'])
@@ -63,16 +65,17 @@ def processlogin():
 def register():
     return render_template('register.html')
 
+
 @app.route('/processregister', methods=["POST", "GET"])
 def processregister():
     # Check if the email and password are correct
-    print(request.form['email'])
-    print(request.form['password'])
     return db.createUser(request.form['email'], request.form['password'], 'guest')
+
 
 @app.route('/createevent')
 def createevent():
     return render_template('createevent.html', user=getUser())
+
 
 @app.route('/processcreateevent', methods=["POST", "GET"])
 def processcreateevent():
@@ -84,16 +87,68 @@ def processcreateevent():
     # Get the form data
     form_fields = dict((key, request.form.getlist(key)[0]) for key in list(request.form.keys()))
 
-    db.createEvent(user=getUser(), name=form_fields['event_name'], start_date=form_fields['start_date'], end_date=form_fields['end_date'], start_time=form_fields['start_time'], end_time=form_fields['end_time'], invitee_emails=form_fields['invitee_emails'])
+    db.createEvent(user=getUser(), name=form_fields['event_name'], start_date=form_fields['start_date'],
+                   end_date=form_fields['end_date'], start_time=form_fields['start_time'],
+                   end_time=form_fields['end_time'], invitee_emails=form_fields['invitee_emails'])
 
     return json.dumps({'success': 0})
+
 
 @app.route('/joinevent')
 def joinevent():
     return render_template('joinevent.html', user=getUser())
 
+
 @app.route('/processjoinevent', methods=["POST", "GET"])
 def processjoinevent():
+    return json.dumps({'success': 0})
+
+
+@app.route('/event/<event_id>')
+def event(event_id):
+    # Check if the event exists
+    _event = db.getEvent(event_id)
+    if len(_event) == 0:
+        return redirect('/home')
+
+    # Check to see if user is logged in
+    if 'email' not in session:
+        return redirect('/login')
+
+    # Check to see if user is an invitee
+    if getUser() not in _event['invitee_emails']:
+        return 'You don\'t have permission to access this page', HTTPStatus.FORBIDDEN
+
+    print(type(_event))
+    return render_template('event.html', event=_event, user=getUser(), slots=db.getUserAvailability(event_id=event_id, user=db.getUser(getUser())['user_id']))
+
+
+@app.route('/event/<event_id>/getavailability')
+def get_availability(event_id):
+    # Check if the event exists
+    _event = db.getEvent(event_id)
+    if len(_event) == 0:
+        return redirect('/home')
+
+    # Check to see if user is logged in
+    if 'email' not in session:
+        return redirect('/login')
+
+    # # Check to see if user is an invitee
+    # if getUser() not in _event['invitee_emails']:
+    #     return 'You don\'t have permission to access this page', HTTPStatus.FORBIDDEN
+
+    # Get the availability data
+    availability = db.getUserAvailability(db.getUser(getUser())['user_id'], event_id)
+    # content type = application/json
+    return json.dumps(availability), {'Content-Type': 'application/json'}
+
+
+@app.route('/event/<event_id>/populatetestavailability')
+def populate_test_availability(event_id):
+    db.updateUserAvailability(event_id, db.getUser(getUser())['user_id'],
+                              [{'date': '2023-10-01', 'column': 1, 'row': 1, 'status': 'available'},
+                                  {'date': '2023-10-01', 'column': 1, 'row': 2, 'status': 'available'}])
     return json.dumps({'success': 0})
 
 
@@ -123,6 +178,7 @@ def add_header(r):
     r.headers["Expires"] = "0"
     return r
 
+
 @app.route('/projects')
 def projects():
     return render_template('projects.html', user=getUser())
@@ -136,24 +192,26 @@ def resume():
     return render_template('resume.html', resume_data=resume_data, user=getUser())
 
 
-@app.route('/processfeedback', methods=['POST'])
-def processfeedback():
-    feedback = request.form
+# @app.route('/processfeedback', methods=['POST'])
+# def processfeedback():
+#     feedback = request.form
+#
+#     # check to make sure the required fields are present
+#     if 'name' not in feedback or 'email' not in feedback:
+#         return 'Missing required fields', HTTPStatus.BAD_REQUEST
+#
+#     db.insertRows('feedback', ['name', 'email', 'comment'],
+#                   [[feedback['name'], feedback['email'], feedback['comment'] if 'comment' in feedback else 'NULL']])
+#
+#     feedback = db.query("SELECT name, email, comment FROM feedback")
+#
+#     return render_template('processfeedback.html', allfeedback=feedback, user=getUser())
 
-    # check to make sure the required fields are present
-    if 'name' not in feedback or 'email' not in feedback:
-        return 'Missing required fields', HTTPStatus.BAD_REQUEST
-
-
-    db.insertRows('feedback', ['name', 'email', 'comment'], [[feedback['name'], feedback['email'], feedback['comment'] if 'comment' in feedback else 'NULL']])
-
-    feedback = db.query("SELECT name, email, comment FROM feedback")
-
-    return render_template('processfeedback.html', allfeedback=feedback, user=getUser())
 
 @app.route('/piano')
 def piano():
     return render_template('piano.html', user=getUser())
+
 
 #######################################################################################
 # TESTING
@@ -163,13 +221,11 @@ def custom_serializer(obj):
         return obj.isoformat()
     raise TypeError(f"Type {type(obj)} not serializable")
 
+
 # This is a route that will return a jsonified version of whatever table is specified
 @app.route('/get/<table>')
 def get_table(table):
     data = db.query(f'SELECT * FROM {table}')
-    response = app.response_class(
-        response=json.dumps(data, default=custom_serializer),
-        status=200,
-        mimetype='application/json'
-    )
+    response = app.response_class(response=json.dumps(data, default=custom_serializer), status=200,
+        mimetype='application/json')
     return response
