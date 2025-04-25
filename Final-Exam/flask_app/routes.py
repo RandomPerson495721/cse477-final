@@ -178,10 +178,11 @@ def disconnect():
 @socketio.on('update_availability', namespace='/availability')
 @login_required
 def update_availability(data):
+    print(data)
     event_id = data['event_id']
     data = data['slot_states']
     db.updateUserAvailability(event_id=event_id, user=db.getUser(getUser())['user_id'], slots=data)
-    print(data)
+
 
     data = db.getHeatmapData(event_id)
     socketio.emit('update_heatmap', {'event_id': event_id, 'slot_states': json.dumps(data)}, namespace='/availability')
