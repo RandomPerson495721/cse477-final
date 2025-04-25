@@ -144,7 +144,7 @@ $(document).ready(function () {
     const event_id = parseInt(document.getElementById('event__data').getAttribute('data-event-id'));
 
 
-    socket = io.connect('http://' + document.domain + ':' + location.port + '/availability');
+    socket = io.connect('https://' + document.domain + ':' + location.port + '/availability');
     // socket.on('connect', function () {
     //     socket.emit('connected', event_id);
     // });
