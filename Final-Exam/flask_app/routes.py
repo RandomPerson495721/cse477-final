@@ -176,7 +176,6 @@ def disconnect():
 
 
 @socketio.on('update_availability', namespace='/availability')
-@login_required
 def update_availability(data):
     print(data)
     event_id = data['event_id']
@@ -189,7 +188,6 @@ def update_availability(data):
 
 
 @socketio.on('get_heatmap', namespace='/availability')
-@login_required
 def get_heatmap(event_id):
     # Check if the event exists
     _event = db.getEvent(event_id)
