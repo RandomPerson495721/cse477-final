@@ -182,6 +182,7 @@ def update_availability(data):
     data = data['slot_states']
     db.updateUserAvailability(event_id=event_id, user=db.getUser(getUser())['user_id'], slots=data)
     print(data)
+
     data = db.getHeatmapData(event_id)
     socketio.emit('update_heatmap', {'event_id': event_id, 'slot_states': json.dumps(data)}, namespace='/availability')
 
