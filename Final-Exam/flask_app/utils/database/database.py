@@ -64,7 +64,6 @@ class database:
         ''' FILL ME IN WITH CODE THAT CREATES YOUR DATABASE TABLES.'''
 
         #should be in order or creation - this matters if you are using forign keys.
-        purge = False
 
         if purge:
             for table in self.tables[::-1]:
