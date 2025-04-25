@@ -95,6 +95,7 @@ def processcreateevent():
 
 
 @app.route('/joinevent')
+@login_required
 def joinevent():
     return render_template('joinevent.html', user=getUser(), events=db.getUserEvents(user=db.getUser(getUser())))
 
@@ -118,7 +119,6 @@ def event(event_id):
 
     session['event_id'] = event_id
 
-    print(type(_event))
     return render_template('event.html', event=_event, user=getUser(), slots=db.getUserAvailability(event_id=event_id, user=db.getUser(getUser())['user_id']), timedelta=datetime.timedelta, datetime=datetime)
 
 
@@ -180,7 +180,6 @@ def disconnect():
 def update_availability(data):
     event_id = data['event_id']
     data = data['slot_states']
-    print(data[0])
     db.updateUserAvailability(event_id=event_id, user=db.getUser(getUser())['user_id'], slots=data)
 
     data = db.getHeatmapData(event_id)

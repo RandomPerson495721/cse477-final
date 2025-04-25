@@ -4,13 +4,15 @@
 Create Event
 {% endblock %}
 
-{% block extrajs %}
-
+{% block extracss %}
+<link rel="stylesheet" href="{{ url_for('static', filename='../../static/main/css/createevent.css') }}">
 {% endblock %}
 
 
+
 {% block maincontent %}
-<br><br>
+
+<div class="create__event">
 <h1>Create event</h1>
 <form id="create_event_form" method="POST" action="/processcreateevent">
     <label for="event_name_input">Event Name:</label><br>
@@ -26,7 +28,8 @@ Create Event
     <label for="invitee_emails_input">List of Invitee Emails (Comma separated):</label><br>
     <input title="invitee_emails" type="text" id="invitee_emails_input" name="invitee_emails"><br><br>
     <input title="submit" type="submit" value="Submit"/>
-<br/>
+</form> </div>
+
 {% endblock %}
 
 

@@ -1,0 +1,6 @@
+.create__event {
+    margin: 5vh 5vw;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}

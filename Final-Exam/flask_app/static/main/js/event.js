@@ -162,7 +162,6 @@ $(document).ready(function () {
     });
 
     socket.on('update_heatmap', (data) => {
-        console.log("Something happened!")
         if (!data) {
             return;
         }

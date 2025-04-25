@@ -1,5 +1,6 @@
 .time__block {
     margin: 0 1rem;
+    display: grid;
 }
 
 .time__grid {
@@ -11,11 +12,22 @@
     margin: 0 5rem;
 }
 
-.slot_holder {
+.slot__holder {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.time__holder {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.day {
+    grid-column: 2;
 }
 
 .slot {
@@ -65,6 +77,7 @@
 .unavailable {
     background-color: #808080;
 }
+
 .slot:hover.unavailable {
     background-color: #666666;
 }
@@ -74,6 +87,7 @@
     flex-direction: row;
     justify-content: space-around;
     align-items: baseline;
+    overflow-x: scroll;
 }
 
 .hm__available_1 {
