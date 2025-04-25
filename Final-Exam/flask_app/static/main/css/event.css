@@ -1,5 +1,5 @@
 .time__block {
-    margin: 0 5rem;
+    margin: 0 1rem;
 }
 
 .time__grid {
@@ -7,14 +7,34 @@
     flex-direction: row;
 }
 
+.time__selector {
+    margin: 0 5rem;
+}
+
+.slot_holder {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 .slot {
-    background-color: #808080;
+    background-color: #ffffff;
     width: 3rem;
     height: 1rem;
 
-    border-top-style: solid;
+    border-style: solid;
     border-width: 0.05rem;
-    border-bottom-style: solid;
+    border-color: #000000;
+}
+
+.heatmap_slot {
+    background-color: #ffffff;
+    width: 3rem;
+    height: 1rem;
+
+    border-style: solid;
+    border-width: 0.05rem;
     border-color: #000000;
 }
 
@@ -36,4 +56,42 @@
 
 .slot:hover.maybe {
     background-color: #cccc00;
+}
+
+#event__data {
+    display: none;
+}
+
+.unavailable {
+    background-color: #808080;
+}
+.slot:hover.unavailable {
+    background-color: #666666;
+}
+
+#selector__and__heatmap {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: baseline;
+}
+
+.hm__available_1 {
+    background-color: #a9ffa9;
+}
+
+.hm__available_2 {
+    background-color: #00ff00;
+}
+
+.hm__available_3 {
+    background-color: #005a00;
+}
+
+.hm__maybe {
+    background-color: #ffff00;
+}
+
+.hm__unavailable {
+    background-color: #808080;
 }

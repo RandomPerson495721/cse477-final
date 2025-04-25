@@ -4,6 +4,8 @@
 // State to see if mouse is down
 let isSelecting = false;
 let startTarget = null;
+//
+
 
 const setSlotState = (element) => {
     const mode = document.getElementById('mode').value;
@@ -34,11 +36,6 @@ const mouseDownHandler = (e) => {
     setSlotState(startTarget);
 };
 
-const mouseUpHandler = (e) => {
-    isSelecting = false;
-    startTarget = null;
-};
-
 const mouseOverHandler = (e) => {
     if (isSelecting) {
         const target = e.target;
@@ -67,52 +64,168 @@ const mouseOverHandler = (e) => {
             }
         }
     }
-
-    //     switch (mode) {
-    //         case 'available':
-    //             target.classList.add('available');
-    //             target.classList.remove('unavailable');
-    //             target.classList.remove('maybe');
-    //             break;
-    //
-    //         case 'unavailable':
-    //             target.classList.add('unavailable');
-    //             target.classList.remove('available');
-    //             target.classList.remove('maybe');
-    //             break;
-    //
-    //         case 'maybe':
-    //             target.classList.add('maybe');
-    //             target.classList.remove('available');
-    //             target.classList.remove('unavailable');
-    //             break;
-    //     }
-    // }
 };
 
-document.addEventListener('mouseup', mouseUpHandler);
+const updateHeatmap = (data) => {
+    data = JSON.parse(data);
+    // Heatmap slots
+    const slots = document.querySelectorAll('.heatmap_slot');
+
+    sort_slots = []
+
+    slots.forEach(slot => {
+        const row = parseInt(slot.getAttribute('data-row'));
+        const column = parseInt(slot.getAttribute('data-column'));
+        const a = `${row}_${column}`
+        const available_count = data[a]?.['available'] || 0;
+        const unavailable_count = data[`${row}_${column}`]?.['unavailable'] || 0;
+        const maybe_count = data[`${row}_${column}`]?.['maybe'] || 0;
+        sort_slots.push([available_count, unavailable_count, ((row + 1)) + (1000 * column + 1), data[`${row}_${column}`], row, column]);
+
+        slot.classList.remove('hm__available_1', 'hm__available_2', 'hm__available_3', 'hm__maybe', 'hm__unavailable');
+
+        if (available_count > 0) {
+            switch (available_count) {
+                case 1:
+                    slot.classList.add('hm__available_1');
+                    break;
+                case 2:
+                    slot.classList.add('hm__available_2');
+                    break;
+                default:
+                    slot.classList.add('hm__available_3');
+            }
+        } else if (maybe_count > 0) {
+            slot.classList.add('hm__maybe');
+        } else if (unavailable_count > 0) {
+            slot.classList.add('hm__unavailable');
+        }
+
+    });
+
+    // Sort the slots based on available count
+    sort_slots.sort((a, b) => {
+        // Available count descending, then unavailable count ascending, then row * column ascending
+        if (b[0] !== a[0]) {
+            return b[0] - a[0];
+        } else if (a[1] !== b[1]) {
+            return a[1] - b[1];
+        } else {
+            return a[2] - b[2];
+        }
+    });
+
+    // Get the best time to meet span
+    const best_time_text = document.getElementById('best_time');
+    const best_time_row = sort_slots[0][4];
+    const best_time_col = sort_slots[0][5];
+    const best_time_slot = document.getElementById(`heatmap_${best_time_row}_${best_time_col}`).getAttribute('data-time');
+
+    let hours = parseInt(best_time_slot.split(':')[0]);
+    let minutes = parseInt(best_time_slot.split(':')[1]);
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    let ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+
+    day = best_time_col;
+
+    best_time_text.innerHTML = sort_slots[0][0] > 0 ? `${hours}:${minutes} ${ampm} on Day ${day}` : 'No available slots';
+
+};
 
 
-// var socket;
-// $(document).ready(function () {
-//
-//     socket = io.connect('http://' + document.domain + ':' + location.port + '/availability');
-//     // socket.on('connect', function () {
-//     //     socket.emit('joined', {});
-//     // });
-//     //
-//     // socket.on('status', function (data) {
-//     //     let tag = document.createElement("p");
-//     //     let text = document.createTextNode(data.msg);
-//     //     let element = document.getElementById("chat");
-//     //     tag.appendChild(text);
-//     //     tag.style.cssText = data.style;
-//     //     element.appendChild(tag);
-//     //     $('#chat').scrollTop($('#chat')[0].scrollHeight);
-//     //
-//     // });
-//
-//
-//
-// });
+
+var socket;
+$(document).ready(function () {
+
+
+
+    // get the event id from the data-event-id attribute of the div with the id event__data
+    const event_id = parseInt(document.getElementById('event__data').getAttribute('data-event-id'));
+
+
+    socket = io.connect('http://' + document.domain + ':' + location.port + '/availability');
+    // socket.on('connect', function () {
+    //     socket.emit('connected', event_id);
+    // });
+    //
+    // socket.on('disconnect', function () {
+    //     socket.emit('disconnected', event_id);
+    // });
+
+    socket.emit('get_heatmap', event_id, (data) => {
+        if (!data) {
+            return;
+        }
+        updateHeatmap(data);
+
+    });
+
+    socket.on('update_heatmap', (data) => {
+        console.log("Something happened!")
+        if (!data) {
+            return;
+        }
+        if (data['event_id'] !== event_id) {
+            return;
+        }
+
+        updateHeatmap(data['slot_states']);
+
+    });
+    //
+    // socket.on('status', function (data) {
+    //     let tag = document.createElement("p");
+    //     let text = document.createTextNode(data.msg);
+    //     let element = document.getElementById("chat");
+    //     tag.appendChild(text);
+    //     tag.style.cssText = data.style;
+    //     element.appendChild(tag);
+    //     $('#chat').scrollTop($('#chat')[0].scrollHeight);
+    //
+    // });
+
+    document.addEventListener('mouseup', function (e) {
+        let prevIsSelecting = isSelecting;
+        isSelecting = false;
+        startTarget = null;
+
+        if (!prevIsSelecting) {
+            return;
+        }
+        // Loop through the rows and columns
+        const slots = document.querySelectorAll('.slot');
+        let slot_states = [];
+        slots.forEach(slot => {
+            if (slot.classList.contains('available') || slot.classList.contains('unavailable') || slot.classList.contains('maybe')) {
+                const row = parseInt(slot.getAttribute('data-row'));
+                const column = parseInt(slot.getAttribute('data-column'));
+                const status = slot.classList.contains('available') ? 'available' : slot.classList.contains('unavailable') ? 'unavailable' : 'maybe';
+                slot_states.push({row, column, status});
+            }
+        });
+
+        if (slot_states.length === 0) {
+            return;
+        }
+
+        // Send the data to the server
+        const data = {
+            'event_id': event_id,
+            'slot_states': slot_states
+        };
+        socket.emit('update_availability', data);
+
+
+    });
+
+
+
+
+});
+
+
+
+
+
 

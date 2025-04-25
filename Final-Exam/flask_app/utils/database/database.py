@@ -218,6 +218,38 @@ class database:
 
         pass
 
+    def getUserEvents(self, user):
+        # Get all events
+        events = self.query(f"SELECT event_id, name, start_date, end_date, users.email as owner_email FROM events INNER JOIN users on events.owner_id = users.user_id WHERE owner_id = {user['user_id']} OR FIND_IN_SET('{user['email']}', invitee_emails) > 0")
+        return events
+
+    def getHeatmapData(self, event_id):
+        query = f"SELECT e_column, e_row, status, COUNT(*) as count FROM event_user_slots WHERE event_id = {event_id} GROUP BY e_column, e_row, status"
+        slots = self.query(query)
+        if len(slots) == 0:
+            return {}
+        res: dict = {}
+
+        # turn it into a dictionary
+        for i in range(len(slots)):
+            key = f"{slots[i]['e_row']}_{slots[i]['e_column']}"
+
+            if (key == "00"):
+                print("key")
+
+            if key not in res:
+                res[key] = {}
+
+            if slots[i]['status'] not in res[key]:
+                res[key][slots[i]['status']] = 0
+
+            res[key][slots[i]['status']] += slots[i]['count']
+
+        return res
+
+
+
+
 # #######################################################################################
 # # RESUME RELATED
 # #######################################################################################

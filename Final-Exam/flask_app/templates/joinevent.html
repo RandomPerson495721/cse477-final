@@ -1,0 +1,22 @@
+{% extends 'shared/layout.html' %}
+
+{% block title %}
+Join Event
+{% endblock %}
+
+{% block extracss %}
+<link rel="stylesheet" href="{{ url_for('static', filename='../../static/main/css/joinevent.css') }}">
+{% endblock %}
+
+
+{% block maincontent %}
+{% for event in events %}
+<div class="event__card">
+    <h1>Title: {{ event.name }}</h1>
+    <h2>Owner: {{ event.owner_email }}</h2>
+    <h2>Date: {{ event.start_date }} - {{ event.end_date }}</h2>
+    <a href="/event/{{ event.event_id }}" class="button">Join Event</a>
+</div>
+{% endfor %}
+{% endblock %}
+

@@ -5,7 +5,9 @@ Event
 {% endblock %}
 
 {% block extrajs %}
-<script src="{{ url_for('static', filename='../../static/main/js/event.js') }}" defer></script>
+<script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js" defer></script>
+<script src="https://cdn.socket.io/3.1.1/socket.io.min.js" defer></script>
+<script src="../static/main/js/event.js" type="text/javascript" charset="utf-8" defer></script>
 {% endblock %}
 
 {% block extracss %}
@@ -14,31 +16,83 @@ Event
 
 
 {% block maincontent %}
+<div id="event__data" data-event-id="{{ event.event_id }}"></div>
 <h1>Title: {{ event.name }}</h1>
 <h2>Date: {{ event.start_date }} - {{ event.end_date }}</h2>
 
 <h3>Time: {{ event.start_time }} - {{ event.end_time }}</h3>
 
-<div class="time__selector">
-    <div class="time__grid">
-        {% for day in range(event.days) %}
+<!-- best time to meet -->
+<h2>Best Time to Meet: <span id="best_time"></span></h2>
+
+
+<div id="selector__and__heatmap">
+    <div class="time__selector">
+        <h3>Your Availability</h3>
+        <div class="time__grid">
+            {% for day in range(event.days) %}
+
             <div class="time__block">
+                <h4>Day {{day}}</h4>
                 {% for slot in range(event.slots) %}
-                <div id="slot_{{slot}}_{{day}}" data-column="{{day}}" data-row="{{slot}}" data-availability="{{slots[(slot,day)]}}" class="slot {{slots[(slot,day)]}}" onmousedown="mouseDownHandler(event)" onmouseover="mouseOverHandler(event)" >
+                <div id="slot_{{slot}}_{{day}}" data-column="{{day}}" data-row="{{slot}}"
+                     data-availability="{{slots[(slot,day)]}}" class="slot {{slots[(slot,day)]}}"
+                     onmousedown="mouseDownHandler(event)" onmouseover="mouseOverHandler(event)">
                 </div>
                 {% endfor %}
             </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
+        <!-- dropdown to select mode -->
+        <br/>
+        <div class="mode__selector">
+            <label for="mode">Select Availability Mode:</label>
+            <select id="mode" name="mode">
+                <option value="available">Available</option>
+                <option value="maybe">Maybe</option>
+                <option value="unavailable">Unavailable</option>
+            </select>
+        </div>
     </div>
-    <!-- dropdown to select mode -->
-    <br/>
-    <div class="mode__selector">
-        <label for="mode">Select Availability Mode:</label>
-        <select id="mode" name="mode">
-            <option value="available">Available</option>
-            <option value="maybe">Maybe</option>
-            <option value="unavailable">Unavailable</option>
-        </select>
+    <div class="time__selector">
+        <h3>Heatmap</h3>
+        <div class="time__grid">
+            {% for day in range(event.days) %}
+            <div class="time__block">
+                <h4>Day {{day}}</h4>
+                <!--                time-->
+
+                <div class="slot_holder">
+                    {% for slot in range(event.slots) %}
+
+<!--                    <span class="time__block__label">-->
+<!--                        {% if day == 0 %}-->
+<!--                            {% set a = (event.start_time + timedelta(minutes=slot*30)) %}-->
+<!--                            {% set b = a.seconds // 3600 %}-->
+<!--                            {% set minutes = (a.seconds // 60) % 60 %}-->
+<!--                            {% if b > 12 %}-->
+<!--                            {% set b = b - 12 %}-->
+<!--                            {{ '%02d'|format(b) }}:{{ '%02d'|format(minutes) }} PM-->
+<!--                            {% else %}-->
+<!--                            {{ '%02d'|format(b) }}:{{ '%02d'|format(minutes) }} AM-->
+<!--                            {% endif %}-->
+<!--                        {% endif %}-->
+<!--                    </span>-->
+                    {% endfor %}
+                </div>
+
+                <div class="slot_holder">
+                    {% for slot in range(event.slots) %}
+                    {% set a = (event.start_time + timedelta(minutes=slot*30)) %}
+                    <div id="heatmap_{{slot}}_{{day}}" data-time="{{a}}" data-column="{{day}}" data-row="{{slot}}" class="heatmap_slot">
+                    </div>
+
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 {% endblock %}
 

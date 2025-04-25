@@ -8,11 +8,9 @@
     <link rel="stylesheet" type="text/css" href="../../static/main/css/header.css">
     <link rel="stylesheet" type="text/css" href="../../static/main/css/navbar.css">
     <link rel="stylesheet" type="text/css" href="../../static/main/css/main.css">
-    <link rel="stylesheet" type="text/css" href="../../static/main/css/feedback.css">
     <link rel="shortcut icon" href="../../static/main/images/favicon.svg">
     {% block extracss %}{% endblock %}
     <script src="{{ url_for('static', filename='main/js/main.js') }}" defer></script>
-    <script src="{{ url_for('static', filename='main/js/feedback.js') }}" defer></script>
     {% block extrajs %}{% endblock %}
 </head>
 
@@ -33,34 +31,17 @@
         <!-- Buttons for the navigation bar -->
         <div class="banner__buttons" id="navMenu">
             <a href="/home" class="button">Home</a>
-            <a href="/projects" class="button">Projects</a>
-            <a href="/resume" class="button">Resume</a>
             {% if user == 'Unknown' %}
             <a href="/login" class="button">Login</a>
             {% else %}
             <a href="/logout" class="button">Logout</a>
             {% endif %}
-            <a href="/chat" class="button">Chat</a>
-            <a href="https://www.linkedin.com/in/james-partin-62015723a" class="button" id="social__linkedin"
-               title="Linkedin" target="_blank">
-                <div class="hidden__text">LinkedIn</div>
-            </a>
         </div>
     </nav>
 
     <!-- The main content  -->
     <main>
-        <button id="feedback__button">Feedback</button>
-        <form id="feedback__form" class="feedback__form--hidden" action="/processfeedback" method="post"
-              enctype="application/x-www-form-urlencoded">
-            <label for="name">Name</label>
-            <input type="text" title="Name" id="name" name="name" required>
-            <label for="email">Email</label>
-            <input type="email" title="Email" id="email" name="email" required>
-            <label for="comment">Comment</label>
-            <textarea title="Comment" id="comment" name="comment" required></textarea>
-            <button type="submit">Submit</button>
-        </form>
+
 
         {% block maincontent %}{% endblock %}
     </main>
