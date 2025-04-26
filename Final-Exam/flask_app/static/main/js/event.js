@@ -134,6 +134,11 @@ const updateHeatmap = (data) => {
     let ampm = hours >= 12 ? 'PM' : 'AM';
     hours = hours % 12;
 
+    if (hours === 0) {
+        hours = 12;
+    }
+
+
     day = best_time_col;
 
     best_time_text.innerHTML = noData ? 'No availability submitted yet' : sort_slots[0][0] > 0 ? `${hours}:${minutes} ${ampm} on Day ${day}` : `No available slots - earliest time slot is ${event_start_date.toLocaleDateString()} at ${event_start_time.toLocaleTimeString()}`;
@@ -227,8 +232,6 @@ $(document).ready(function () {
 
 
     });
-
-
 
 
 });
