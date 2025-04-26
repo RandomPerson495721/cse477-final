@@ -16,7 +16,7 @@ Event
 
 
 {% block maincontent %}
-<div id="event__data" data-event-id="{{ event.event_id }}"></div>
+<div id="event__data" data-event-id="{{ event.event_id }}" data-event-start-date="{{ event.start_date.strftime('%m-%d-%Y') }}" data-event-start-time="{{ event.start_time }}"></div>
 <h1>Title: {{ event.name }}</h1>
 <h2>Date: {{ event.start_date.strftime('%m-%d-%Y') }} - {{ event.end_date.strftime('%m-%d-%Y') }}</h2>
 

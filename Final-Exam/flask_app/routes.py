@@ -71,13 +71,14 @@ def processregister():
     # Check if the email and password are correct
     return db.createUser(request.form['email'], request.form['password'], 'guest')
 
-
 @app.route('/createevent')
+@login_required
 def createevent():
     return render_template('createevent.html', user=getUser())
 
 
 @app.route('/processcreateevent', methods=["POST", "GET"])
+@login_required
 def processcreateevent():
     # Event Name: a short descriptive title for the event (e.g., “Team Meeting Scheduler”).
     # Start Date and End Date: these define the date range over which availability will be collected. Both dates must be inclusive.
@@ -87,11 +88,14 @@ def processcreateevent():
     # Get the form data
     form_fields = dict((key, request.form.getlist(key)[0]) for key in list(request.form.keys()))
 
-    db.createEvent(user=db.getUser(getUser())['user_id'], name=form_fields['event_name'], start_date=form_fields['start_date'],
+    event_id = db.createEvent(user=db.getUser(getUser())['user_id'], name=form_fields['event_name'], start_date=form_fields['start_date'],
                    end_date=form_fields['end_date'], start_time=form_fields['start_time'],
                    end_time=form_fields['end_time'], invitee_emails=form_fields['invitee_emails'])
-
-    return redirect('/home')
+    # Check if the event was created successfully
+    if event_id["success"] == 1:
+        return redirect('/event/' + str(event_id["event_id"]))
+    else:
+        return json.dumps({'success': 0, 'error': 'Event creation failed'})
 
 
 @app.route('/joinevent')
@@ -101,6 +105,7 @@ def joinevent():
 
 
 @app.route('/processjoinevent', methods=["POST", "GET"])
+@login_required
 def processjoinevent():
     return json.dumps({'success': 0})
 
@@ -143,13 +148,6 @@ def get_availability(event_id):
     # content type = application/json
     return json.dumps(availability), {'Content-Type': 'application/json'}
 
-
-@app.route('/event/<event_id>/populatetestavailability')
-def populate_test_availability(event_id):
-    db.updateUserAvailability(event_id, db.getUser(getUser())['user_id'],
-                              [{'date': '2023-10-01', 'column': 1, 'row': 1, 'status': 'available'},
-                                  {'date': '2023-10-01', 'column': 1, 'row': 2, 'status': 'available'}])
-    return json.dumps({'success': 0})
 
 
 #########################################################################################
@@ -206,8 +204,8 @@ def root():
 
 
 @app.route('/home')
+@login_required
 def home():
-    # print(db.query('SELECT * FROM users'))
     return render_template('event_portal.html', user=getUser())
 
 
@@ -223,54 +221,19 @@ def add_header(r):
     r.headers["Expires"] = "0"
     return r
 
-
-@app.route('/projects')
-def projects():
-    return render_template('projects.html', user=getUser())
-
-
-@app.route('/resume')
-def resume():
-    resume_data = db.getResumeData()
-    print(type(resume_data))
-    pprint(resume_data)
-    return render_template('resume.html', resume_data=resume_data, user=getUser())
-
-
-# @app.route('/processfeedback', methods=['POST'])
-# def processfeedback():
-#     feedback = request.form
-#
-#     # check to make sure the required fields are present
-#     if 'name' not in feedback or 'email' not in feedback:
-#         return 'Missing required fields', HTTPStatus.BAD_REQUEST
-#
-#     db.insertRows('feedback', ['name', 'email', 'comment'],
-#                   [[feedback['name'], feedback['email'], feedback['comment'] if 'comment' in feedback else 'NULL']])
-#
-#     feedback = db.query("SELECT name, email, comment FROM feedback")
-#
-#     return render_template('processfeedback.html', allfeedback=feedback, user=getUser())
-
-
-@app.route('/piano')
-def piano():
-    return render_template('piano.html', user=getUser())
-
-
 #######################################################################################
 # TESTING
 #######################################################################################
-def custom_serializer(obj):
-    if isinstance(obj, (datetime.date, datetime.datetime)):
-        return obj.isoformat()
-    raise TypeError(f"Type {type(obj)} not serializable")
+# def custom_serializer(obj):
+#     if isinstance(obj, (datetime.date, datetime.datetime)):
+#         return obj.isoformat()
+#     raise TypeError(f"Type {type(obj)} not serializable")
 
 
-# This is a route that will return a jsonified version of whatever table is specified
-@app.route('/get/<table>')
-def get_table(table):
-    data = db.query(f'SELECT * FROM {table}')
-    response = app.response_class(response=json.dumps(data, default=custom_serializer), status=200,
-        mimetype='application/json')
-    return response
+# # This is a route that will return a jsonified version of whatever table is specified
+# @app.route('/get/<table>')
+# def get_table(table):
+#     data = db.query(f'SELECT * FROM {table}')
+#     response = app.response_class(response=json.dumps(data, default=custom_serializer), status=200,
+#         mimetype='application/json')
+#     return response

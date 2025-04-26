@@ -9,16 +9,11 @@ const checkCredentials = () => {
     // SEND DATA TO SERVER VIA jQuery.ajax({})
     jQuery.ajax({
         url: "/processregister", data: data_d, type: "POST", success: function (returned_data) {
-
-            returned_data = JSON.parse(returned_data);
             if (returned_data['success'] === 0) {
-                alert('Login failed. Please try again.');
-                // document.getElementById('login_error').innerHTML = returned_data['msg'];
-                // document.getElementById('login_error').style.display = 'block';
-                document.getElementById('login_attempts').innerHTML = 'Login Failed. Attempts: ' + returned_data['login_attempt'];
+                alert(`Register failed. ${returned_data?.['error']}. Please try again.`);
             } else {
-
-                window.location.href = "/home";
+                alert(`Register succeeded. Redirecting to login page.`);
+                window.location.href = "/login";
             }
         }
     });

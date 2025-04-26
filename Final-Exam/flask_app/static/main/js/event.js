@@ -68,6 +68,13 @@ const mouseOverHandler = (e) => {
 
 const updateHeatmap = (data) => {
     data = JSON.parse(data);
+    const noData = Object.keys(data).length === 0;
+
+    // General event data
+    const event_data = document.getElementById('event__data');
+    const event_start_date = new Date(event_data.getAttribute('data-event-start-date'));
+    const event_start_time = parseTime(event_data.getAttribute('data-event-start-time'));
+
     // Heatmap slots
     const slots = document.querySelectorAll('.heatmap_slot');
 
@@ -129,22 +136,27 @@ const updateHeatmap = (data) => {
 
     day = best_time_col;
 
-    best_time_text.innerHTML = sort_slots[0][0] > 0 ? `${hours}:${minutes} ${ampm} on Day ${day}` : 'No available slots';
+    best_time_text.innerHTML = noData ? 'No availability submitted yet' : sort_slots[0][0] > 0 ? `${hours}:${minutes} ${ampm} on Day ${day}` : `No available slots - earliest time slot is ${event_start_date.toLocaleDateString()} at ${event_start_time.toLocaleTimeString()}`;
 
 };
 
+const parseTime = (timeString) => {
+    const timeParts = timeString.split(':');
+    let hours = parseInt(timeParts[0]);
+    const minutes = parseInt(timeParts[1]);
 
+    const time = new Date();
+    time.setHours(hours, minutes, 0, 0);
+
+    return new Date(time);
+}
 
 var socket;
 $(document).ready(function () {
-
-
-
     // get the event id from the data-event-id attribute of the div with the id event__data
     const event_id = parseInt(document.getElementById('event__data').getAttribute('data-event-id'));
 
-
-    socket = io.connect('https://' + document.domain + ':' + location.port + '/availability');
+    socket = io.connect(document.location.protocol + '//' + document.domain + ':' + location.port + '/availability');
     // socket.on('connect', function () {
     //     socket.emit('connected', event_id);
     // });
@@ -158,7 +170,6 @@ $(document).ready(function () {
             return;
         }
         updateHeatmap(data);
-
     });
 
     socket.on('update_heatmap', (data) => {
@@ -170,7 +181,6 @@ $(document).ready(function () {
         }
 
         updateHeatmap(data['slot_states']);
-
     });
     //
     // socket.on('status', function (data) {
@@ -222,9 +232,3 @@ $(document).ready(function () {
 
 
 });
-
-
-
-
-
-
